@@ -31,8 +31,9 @@ console.
 
 The bot combines two signals on each completed candle:
 
-- **Moving average crossover** — a short-period SMA (default 9) crossing above a long-period
-  SMA (default 21) is a bullish "golden cross"; crossing below is a bearish "death cross".
+- **Moving average crossover** — a short-period EMA (default 9) crossing above a long-period
+  EMA (default 21) is a bullish "golden cross"; crossing below is a bearish "death cross".
+  SMA values are also computed and logged for reference.
 - **RSI (Relative Strength Index)** — used as a filter/override. An RSI above the overbought
   threshold (default 70) forces a SELL regardless of the crossover, guarding against buying
   into an already-overextended move.

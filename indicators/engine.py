@@ -23,7 +23,7 @@ class IndicatorEngine:
         df["ema_long"] = ta.ema(df["close"], length=self.config.long_window)
         df["rsi"] = ta.rsi(df["close"], length=self.config.rsi_period)
 
-        short_above_long = df["sma_short"] > df["sma_long"]
+        short_above_long = df["ema_short"] > df["ema_long"]
         prev_short_above_long = short_above_long.shift(1, fill_value=False)
 
         df["crossover"] = 0
