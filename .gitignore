@@ -12,4 +12,5 @@ venv/
 env/
 logs/*.log
 logs/portfolio.json
+logs/trades.jsonl
 .DS_Store

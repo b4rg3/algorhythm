@@ -74,6 +74,9 @@ def print_banner() -> None:
 if __name__ == "__main__":
     print_banner()
 
+    resumed = os.path.exists(STATE_PATH)
+    logger.log_session_start(config, trader.balance_usdt, resumed)
+
     run_cycle()
 
     schedule.every(15).minutes.do(run_cycle)
