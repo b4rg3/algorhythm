@@ -35,12 +35,12 @@ The bot combines two signals on each completed candle:
   EMA (default 21) is a bullish "golden cross"; crossing below is a bearish "death cross".
   SMA values are also computed and logged for reference.
 - **RSI (Relative Strength Index)** — used as a filter/override. An RSI above the overbought
-  threshold (default 70) forces a SELL regardless of the crossover, guarding against buying
-  into an already-overextended move.
+  threshold (default 70) forces a SELL; an RSI below the oversold threshold (default 30) forces
+  a BUY. Both override the crossover signal.
 
 Signal rules:
 
-- **BUY** — golden cross occurred and RSI is below the overbought threshold.
+- **BUY** — RSI is below the oversold threshold, OR a golden cross occurred with RSI below overbought.
 - **SELL** — death cross occurred, or RSI is above the overbought threshold.
 - **HOLD** — otherwise.
 

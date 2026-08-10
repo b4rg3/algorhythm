@@ -19,6 +19,8 @@ class MARSIStrategy:
 
         last = df.iloc[-1]
 
+        if last["rsi"] < self.config.rsi_oversold:
+            return "BUY"
         if last["crossover"] == -1 or last["rsi"] > self.config.rsi_overbought:
             return "SELL"
         if last["crossover"] == 1 and last["rsi"] < self.config.rsi_overbought:

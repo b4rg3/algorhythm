@@ -24,7 +24,7 @@ def _env_int(name: str, default: int) -> int:
 class Config:
     """Runtime configuration for the trading bot, loaded from environment variables."""
 
-    exchange: str = os.getenv("EXCHANGE", "binance")
+    exchange: str = os.getenv("EXCHANGE", "kraken")
     symbol: str = os.getenv("SYMBOL", "BTC/USDT")
     timeframe: str = os.getenv("TIMEFRAME", "15m")
 
