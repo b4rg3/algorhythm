@@ -1,5 +1,6 @@
 """Entry point for the algorhythm paper trading bot."""
 
+import os
 import time
 
 import schedule
@@ -8,7 +9,7 @@ from rich.panel import Panel
 
 from config import Config
 from data.fetcher import DataFetcher
-from execution.paper_trader import PaperTrader
+from execution.paper_trader import PaperTrader, STATE_PATH
 from indicators.engine import IndicatorEngine
 from logger.trade_log import TradeLogger
 from risk.manager import RiskManager
@@ -56,12 +57,16 @@ def run_cycle() -> None:
 def print_banner() -> None:
     """Print a startup banner with the current run configuration."""
     console = Console()
+    resumed = os.path.exists(STATE_PATH)
+    balance_label = "Resumed balance" if resumed else "Starting balance"
+    balance_value = trader.balance_usdt if resumed else config.paper_balance_usdt
     banner = (
         "[bold cyan]algorhythm[/bold cyan] - MA crossover + RSI paper trading bot\n\n"
-        f"Symbol:          {config.symbol}\n"
-        f"Timeframe:       {config.timeframe}\n"
-        f"Starting balance: {config.paper_balance_usdt:.2f} USDT\n"
-        f"MA windows:      short={config.short_window}, long={config.long_window}"
+        f"Symbol:           {config.symbol}\n"
+        f"Timeframe:        {config.timeframe}\n"
+        f"{balance_label}: {balance_value:.2f} USDT\n"
+        f"MA windows:       short={config.short_window}, long={config.long_window}\n"
+        f"State:            {'resumed from ' + STATE_PATH if resumed else 'fresh start'}"
     )
     console.print(Panel(banner, title="Startup", border_style="cyan"))
 

@@ -1,20 +1,48 @@
 """Simulated (paper) trade execution."""
 
+import json
+import os
 from typing import Optional
 
 from config import Config
 from risk.manager import RiskManager
+
+STATE_PATH = os.path.join(os.path.dirname(__file__), "..", "logs", "portfolio.json")
 
 
 class PaperTrader:
     """Simulates trade execution and tracks a paper trading portfolio."""
 
     def __init__(self, config: Config) -> None:
-        """Initialise starting balances and an empty position."""
+        """Initialise balances from saved state if it exists, otherwise use config defaults."""
         self.config = config
         self.balance_usdt: float = config.paper_balance_usdt
         self.balance_base: float = 0.0
         self.position: Optional[dict] = None
+        self._load()
+
+    def _load(self) -> None:
+        """Restore portfolio state from disk if a saved state file exists."""
+        if not os.path.exists(STATE_PATH):
+            return
+        with open(STATE_PATH) as f:
+            state = json.load(f)
+        self.balance_usdt = state["balance_usdt"]
+        self.balance_base = state["balance_base"]
+        self.position = state["position"]
+
+    def _save(self) -> None:
+        """Persist current portfolio state to disk."""
+        with open(STATE_PATH, "w") as f:
+            json.dump(
+                {
+                    "balance_usdt": self.balance_usdt,
+                    "balance_base": self.balance_base,
+                    "position": self.position,
+                },
+                f,
+                indent=2,
+            )
 
     def execute(self, signal: str, price: float, risk_manager: RiskManager) -> Optional[dict]:
         """Simulate executing a signal at the given price, returning a trade dict or None."""
@@ -24,7 +52,9 @@ class PaperTrader:
                 side == "SELL" and price >= self.position["stop_loss"]
             )
             if stop_hit:
-                return self._close_position(price, action="STOP_LOSS")
+                trade = self._close_position(price, action="STOP_LOSS")
+                self._save()
+                return trade
 
         if signal == "BUY" and self.position is None and self.balance_usdt > 10:
             quantity = risk_manager.position_size(self.balance_usdt, price)
@@ -42,6 +72,7 @@ class PaperTrader:
                 "quantity": quantity,
                 "stop_loss": stop_loss,
             }
+            self._save()
             return {
                 "action": "BUY",
                 "price": price,
@@ -52,7 +83,9 @@ class PaperTrader:
             }
 
         if signal == "SELL" and self.position is not None:
-            return self._close_position(price, action="SELL")
+            trade = self._close_position(price, action="SELL")
+            self._save()
+            return trade
 
         return None
 
