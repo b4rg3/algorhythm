@@ -25,7 +25,7 @@ class Config:
     """Runtime configuration for the trading bot, loaded from environment variables."""
 
     exchange: str = os.getenv("EXCHANGE", "kraken")
-    symbol: str = os.getenv("SYMBOL", "BTC/USDT")
+    symbol: str = os.getenv("SYMBOL", "DOGE/USDT")
     timeframe: str = os.getenv("TIMEFRAME", "15m")
 
     short_window: int = _env_int("SHORT_WINDOW", 9)
