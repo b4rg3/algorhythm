@@ -1,8 +1,18 @@
 """Rich-formatted console logging for candles, trades, and portfolio state."""
 
+import math
+
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+
+
+def _price_fmt(price: float) -> str:
+    """Format a price with enough decimal places to show at least 4 significant figures."""
+    if price == 0:
+        return "0.00"
+    decimals = max(2, -int(math.floor(math.log10(abs(price)))) + 3)
+    return f"{price:.{decimals}f}"
 
 
 class TradeLogger:
@@ -17,12 +27,13 @@ class TradeLogger:
         signal = indicators.get("signal", "HOLD")
         color = {"BUY": "green", "SELL": "red"}.get(signal, "dim")
 
+        p = _price_fmt
         line = (
             f"[{color}]{signal:<4}[/{color}] "
-            f"sma_short={indicators['sma_short']:.2f} "
-            f"sma_long={indicators['sma_long']:.2f} "
-            f"ema_short={indicators['ema_short']:.2f} "
-            f"ema_long={indicators['ema_long']:.2f} "
+            f"sma_short={p(indicators['sma_short'])} "
+            f"sma_long={p(indicators['sma_long'])} "
+            f"ema_short={p(indicators['ema_short'])} "
+            f"ema_long={p(indicators['ema_long'])} "
             f"rsi={indicators['rsi']:.2f} "
             f"crossover={indicators['crossover']}"
         )
@@ -33,11 +44,12 @@ class TradeLogger:
         action = trade["action"]
         color = "green" if action == "BUY" else "red"
 
+        p = _price_fmt
         table = Table(show_header=False, box=None)
-        table.add_row("Price", f"{trade['price']:.2f}")
+        table.add_row("Price", p(trade["price"]))
         table.add_row("Quantity", f"{trade['quantity']:.6f}")
         if "stop_loss" in trade:
-            table.add_row("Stop Loss", f"{trade['stop_loss']:.2f}")
+            table.add_row("Stop Loss", p(trade["stop_loss"]))
         if "pnl" in trade:
             pnl_color = "green" if trade["pnl"] >= 0 else "red"
             table.add_row("P&L", f"[{pnl_color}]{trade['pnl']:.2f}[/{pnl_color}]")
@@ -52,7 +64,7 @@ class TradeLogger:
         """Print a one-line portfolio value summary."""
         self.console.print(
             f"[bold cyan]Portfolio[/bold cyan] value={value:.2f} USDT "
-            f"(usdt={balance_usdt:.2f}, base={balance_base:.6f} @ {price:.2f})"
+            f"(usdt={balance_usdt:.2f}, base={balance_base:.6f} @ {_price_fmt(price)})"
         )
 
     def log_error(self, msg: str) -> None:
