@@ -11,9 +11,13 @@ class RiskManager:
         self.config = config
 
     def position_size(self, balance_usdt: float, price: float) -> float:
-        """Return the quantity of base currency to buy for one risked trade."""
+        """Return the quantity of base currency to buy for one risked trade.
+
+        Sizes so that a full stop-loss hit loses exactly risk_per_trade_pct of balance.
+        """
         risk_amount = balance_usdt * self.config.risk_per_trade_pct
-        quantity = risk_amount / price
+        stop_distance = price * self.config.stop_loss_pct
+        quantity = risk_amount / stop_distance
         return round(quantity, 6)
 
     def stop_loss_price(self, entry_price: float, side: str) -> float:

@@ -29,6 +29,9 @@ class PaperTrader:
         if signal == "BUY" and self.position is None and self.balance_usdt > 10:
             quantity = risk_manager.position_size(self.balance_usdt, price)
             cost = quantity * price
+            if cost > self.balance_usdt:
+                quantity = round(self.balance_usdt / price, 6)
+                cost = quantity * price
             self.balance_usdt -= cost
             self.balance_base += quantity
 
