@@ -1,0 +1,60 @@
+{
+  "protocol": "v1",
+  "rule": "fastest timeframe with median ATR(14)% >= 2.0 x round-trip cost (1.80%)",
+  "round_trip_cost_pct": 0.9000000000000001,
+  "train_segment": [
+    "2024-11-11 00:00:00+00:00",
+    "2026-02-02 00:00:00+00:00"
+  ],
+  "stats": [
+    {
+      "timeframe": "15m",
+      "candles": 43008,
+      "median_atr_pct": 0.59679770922929,
+      "median_abs_close_move_pct": 0.24399894486943907,
+      "atr_to_cost": 0.6631085658103221,
+      "passes": false
+    },
+    {
+      "timeframe": "30m",
+      "candles": 21504,
+      "median_atr_pct": 0.8736125268744701,
+      "median_abs_close_move_pct": 0.33377837116155273,
+      "atr_to_cost": 0.9706805854160777,
+      "passes": false
+    },
+    {
+      "timeframe": "1h",
+      "candles": 10752,
+      "median_atr_pct": 1.2800547507813944,
+      "median_abs_close_move_pct": 0.46275783980702645,
+      "atr_to_cost": 1.4222830564237714,
+      "passes": false
+    },
+    {
+      "timeframe": "2h",
+      "candles": 5376,
+      "median_atr_pct": 1.8543505630383978,
+      "median_abs_close_move_pct": 0.6513409961685812,
+      "atr_to_cost": 2.0603895144871083,
+      "passes": true
+    },
+    {
+      "timeframe": "4h",
+      "candles": 2688,
+      "median_atr_pct": 2.72291485270714,
+      "median_abs_close_move_pct": 0.941693478772665,
+      "atr_to_cost": 3.0254609474523773,
+      "passes": true
+    },
+    {
+      "timeframe": "1d",
+      "candles": 448,
+      "median_atr_pct": 7.760233536684042,
+      "median_abs_close_move_pct": 2.807775377969768,
+      "atr_to_cost": 8.622481707426711,
+      "passes": true
+    }
+  ],
+  "chosen": "2h"
+}
