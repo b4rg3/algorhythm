@@ -14,6 +14,7 @@ logged to `research/holdout_log.jsonl`. Select a version with `PROTOCOL=v1` (def
 |---|---|---|
 | v1 | DOGE/USDT | **Rejected** at step 3: all 18 variants lost money on train (DOGE −72%). Holdout unused. |
 | v2 | ETH/USDT | **Rejected** at step 3: 2 of 18 variants were positive on train (+1.9%, +1.1%; ETH −28.7%), both lost 10.9% on validation. Timeframe 4h. Holdout unused. |
+| v3 | BTC + ETH + DOGE, daily | Pre-registered; see "v3" below. Different strategy (SMA trend-following). |
 
 The rules below were written for v1 and apply unchanged to every version unless a version's
 section says otherwise.
@@ -106,3 +107,113 @@ Disclosures:
   ETH's current spot price (~$2,076 on 2026-11-11) was seen via CoinGecko; its price history
   over the window has not been reviewed in this project.
 - The live bot is not affected by this protocol; its SYMBOL stays as configured in `.env`.
+
+---
+
+## v3: daily trend-following
+
+v1 and v2 tested the same 2h/4h crossover strategy and rejected it on both markets. v3 tests a
+**different strategy**, chosen for structural reasons, not because of any result on v3's own
+rules:
+
+- **Daily candles** make costs small relative to typical moves (daily ATR was 7.8% for DOGE
+  and 5.7% for ETH against a 0.90% round trip).
+- **Few trades.** Slow trend rules typically make a handful of round trips per year.
+- **Built to sit out declines.** In v1/v2 the only consistently helpful component was the
+  long-term trend filter, which cut losses by keeping the bot in cash.
+
+### Strategy
+
+Long-only, evaluated once per day on the completed daily candle:
+
+- **Enter** (go fully long) when `close > SMA(N) × (1 + b)`.
+- **Exit** (go fully to cash) when `close < SMA(N) × (1 − b)`.
+- Otherwise keep the current state. The band `b` reduces whipsaw around the average.
+
+Execution and sizing:
+
+- Fills at the daily close with the same costs as v1/v2: 0.40% fee + 0.05% slippage per fill.
+- **Position size: 100% of available balance** (net of fees). The v1/v2 rule (risk 2% with
+  a 3% stop) doesn't fit daily trend-following: a 3% stop sits well inside a single day's
+  normal range.
+- **No fixed stop-loss.** The trend exit is the stop. This is a deliberate trade-off: losses
+  between daily closes are not capped.
+
+### Markets: one parameter set across three markets
+
+BTC/USDT, ETH/USDT and DOGE/USDT, daily candles from **Gate**, cross-checked against
+CoinGecko where its public API reaches (the last 365 days). Gate is used instead of KuCoin
+because KuCoin's DOGE/USDT daily history only starts in early 2021. Gate covers all three
+markets from 2019-05-01 with no missing days. That was checked before this protocol was
+committed, by looking only at candle dates; no strategy was run.
+
+**The same variant must be used on all three markets.** Choosing per market would triple the
+chances of fitting noise. Requiring one rule to work broadly is a stronger test.
+
+### Data and splits
+
+Daily candles need far more history than 730 days: a 200-day average uses most of a year
+just to warm up. So v3 uses a longer window. The holdout is the same untouched span as v1/v2.
+
+| Segment | Span | Notes |
+|---|---|---|
+| Train | 2020-01-01 to 2023-12-31 | 2020–21 bull, 2022 bear, 2023 recovery |
+| Validation | 2024-01-01 to 2026-08-13 | Overlaps v1/v2 train/validation (see disclosures) |
+| **Holdout** | 2026-08-13 to 2026-11-11 | No strategy has been evaluated here on any market |
+
+Indicators warm up on data before each segment.
+
+### Variant grid (8 variants, fixed)
+
+| Setting | Values |
+|---|---|
+| SMA length N (days) | 50, 100, 150, 200 |
+| Band b | 0%, 2% |
+
+No other settings are varied.
+
+### Selection rule
+
+1. A variant **survives** if, on the train segment, it has a positive return after costs on
+   at least 2 of 3 markets **and** at least 5 closed trades on each market. The trade minimum
+   exists because v2's only survivors had 6–8 trades.
+2. Among survivors, select the variant with the **highest average validation return across
+   the three markets**.
+3. **Reject** if nothing survives, or if the selected variant's average validation return
+   is ≤ 0.
+4. Report the fragility check as in v1: whether neighbouring N values with the same band are
+   also positive on validation.
+
+### Holdout (run once)
+
+- **Pass:** average holdout return across the three markets > 0 after costs, **and**
+  positive on at least 2 of 3.
+- **Inconclusive:** if the selected variant takes no position on any market during the
+  holdout (possible, since it is a slow strategy in a falling market), the result is
+  recorded as inconclusive, not as a pass or a fail.
+- Also reported: buy-and-hold and max drawdown per market.
+
+**Power warning:** 90 daily candles will contain very few trades (likely 0–2 per market),
+so the holdout can catch a clear failure but can't confirm an edge. Forward paper trading
+(step 5) is the primary test for v3. A pass sends the variant to paper trading; it is not
+a verdict.
+
+### Disclosures
+
+- **Third attempt.** v1 and v2 failed. v3 is a different strategy, but the idea was
+  partly informed by v1/v2's results (the trend filter helped). Count so far: 18 + 18 + 8
+  variants.
+- **Validation overlap.** The validation segment (2024-01 to 2026-08) overlaps data on which
+  v1/v2 evaluated a different strategy, and DOGE's price path over the past year has been
+  viewed. The market regime of the later validation period (a broad decline) is known.
+- **New window.** The data window differs from v1/v2. That is because daily candles need
+  more history, and it was fixed before any v3 result was computed.
+- BTC has not been backtested in this project.
+
+### Implementation (written after this protocol was committed)
+
+- A trend strategy class (SMA + band, stateful enter/exit) alongside the existing MA/RSI one.
+- A full-allocation sizing mode and an option to disable the fixed stop in `PaperTrader`.
+- Multi-market support in the protocol scripts (sweep and holdout across three symbols).
+- The live bot will be able to run v3 (Kraken serves 720 daily candles, enough for SMA 200),
+  but only after a pass.
