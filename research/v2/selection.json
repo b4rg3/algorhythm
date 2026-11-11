@@ -1,0 +1,425 @@
+{
+  "protocol": "v2",
+  "symbol": "ETH/USDT",
+  "timeframe": "4h",
+  "status": "rejected",
+  "reason": "best surviving variant had a non-positive validation return",
+  "selected": null,
+  "fragility": null,
+  "results": [
+    {
+      "variant": {
+        "short_window": 9,
+        "long_window": 21,
+        "trend_period": 0,
+        "rsi_oversold_buy": true
+      },
+      "label": "ema9/21 notrend rsibuy",
+      "train": {
+        "total_return_pct": -67.12588627491851,
+        "total_trades": 111,
+        "profit_factor": 0.4214743785611529,
+        "max_drawdown_pct": 70.12377428836255,
+        "buy_hold_pct": -28.728300109872862
+      },
+      "validation": {
+        "total_return_pct": -36.93981628748294,
+        "total_trades": 47,
+        "profit_factor": 0.38536659551112096,
+        "max_drawdown_pct": 38.55667165624195,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 9,
+        "long_window": 21,
+        "trend_period": 0,
+        "rsi_oversold_buy": false
+      },
+      "label": "ema9/21 notrend norsibuy",
+      "train": {
+        "total_return_pct": -48.23215961357173,
+        "total_trades": 72,
+        "profit_factor": 0.4320753300620699,
+        "max_drawdown_pct": 53.44748887999615,
+        "buy_hold_pct": -28.728300109872862
+      },
+      "validation": {
+        "total_return_pct": -20.184043668357948,
+        "total_trades": 31,
+        "profit_factor": 0.4767797990107699,
+        "max_drawdown_pct": 22.453173068080332,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 9,
+        "long_window": 21,
+        "trend_period": 100,
+        "rsi_oversold_buy": true
+      },
+      "label": "ema9/21 trend100 rsibuy",
+      "train": {
+        "total_return_pct": -23.8538292954006,
+        "total_trades": 34,
+        "profit_factor": 0.4615095788921062,
+        "max_drawdown_pct": 31.590378620315146,
+        "buy_hold_pct": -36.101096241257515
+      },
+      "validation": {
+        "total_return_pct": -5.375301108364613,
+        "total_trades": 16,
+        "profit_factor": 0.707649068133475,
+        "max_drawdown_pct": 6.6295440315713465,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 9,
+        "long_window": 21,
+        "trend_period": 100,
+        "rsi_oversold_buy": false
+      },
+      "label": "ema9/21 trend100 norsibuy",
+      "train": {
+        "total_return_pct": -23.8538292954006,
+        "total_trades": 34,
+        "profit_factor": 0.4615095788921062,
+        "max_drawdown_pct": 31.590378620315146,
+        "buy_hold_pct": -36.101096241257515
+      },
+      "validation": {
+        "total_return_pct": -5.375301108364613,
+        "total_trades": 16,
+        "profit_factor": 0.707649068133475,
+        "max_drawdown_pct": 6.6295440315713465,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 9,
+        "long_window": 21,
+        "trend_period": 200,
+        "rsi_oversold_buy": true
+      },
+      "label": "ema9/21 trend200 rsibuy",
+      "train": {
+        "total_return_pct": -14.278748094900992,
+        "total_trades": 30,
+        "profit_factor": 0.6389114513925022,
+        "max_drawdown_pct": 20.455667723606517,
+        "buy_hold_pct": -42.09402744868992
+      },
+      "validation": {
+        "total_return_pct": -5.96895405133422,
+        "total_trades": 13,
+        "profit_factor": 0.5496199172881835,
+        "max_drawdown_pct": 6.629561876572806,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 9,
+        "long_window": 21,
+        "trend_period": 200,
+        "rsi_oversold_buy": false
+      },
+      "label": "ema9/21 trend200 norsibuy",
+      "train": {
+        "total_return_pct": -19.65837314685458,
+        "total_trades": 28,
+        "profit_factor": 0.4678463445088258,
+        "max_drawdown_pct": 22.598709369228743,
+        "buy_hold_pct": -42.09402744868992
+      },
+      "validation": {
+        "total_return_pct": -5.96895405133422,
+        "total_trades": 13,
+        "profit_factor": 0.5496199172881835,
+        "max_drawdown_pct": 6.629561876572806,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 12,
+        "long_window": 26,
+        "trend_period": 0,
+        "rsi_oversold_buy": true
+      },
+      "label": "ema12/26 notrend rsibuy",
+      "train": {
+        "total_return_pct": -67.14892535280624,
+        "total_trades": 92,
+        "profit_factor": 0.334254360886076,
+        "max_drawdown_pct": 68.43767384140838,
+        "buy_hold_pct": -25.29203877616831
+      },
+      "validation": {
+        "total_return_pct": -33.02597462482745,
+        "total_trades": 37,
+        "profit_factor": 0.37306162988803365,
+        "max_drawdown_pct": 37.350984259238594,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 12,
+        "long_window": 26,
+        "trend_period": 0,
+        "rsi_oversold_buy": false
+      },
+      "label": "ema12/26 notrend norsibuy",
+      "train": {
+        "total_return_pct": -43.15820840481028,
+        "total_trades": 53,
+        "profit_factor": 0.3774060591535614,
+        "max_drawdown_pct": 46.039026797713426,
+        "buy_hold_pct": -25.29203877616831
+      },
+      "validation": {
+        "total_return_pct": -9.324308761210773,
+        "total_trades": 20,
+        "profit_factor": 0.6500007705219784,
+        "max_drawdown_pct": 16.31819141851145,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 12,
+        "long_window": 26,
+        "trend_period": 100,
+        "rsi_oversold_buy": true
+      },
+      "label": "ema12/26 trend100 rsibuy",
+      "train": {
+        "total_return_pct": -21.5481849840584,
+        "total_trades": 28,
+        "profit_factor": 0.43999661485995334,
+        "max_drawdown_pct": 25.17305889213391,
+        "buy_hold_pct": -36.101096241257515
+      },
+      "validation": {
+        "total_return_pct": -7.679568592506518,
+        "total_trades": 13,
+        "profit_factor": 0.5885091277891746,
+        "max_drawdown_pct": 10.401639401659473,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 12,
+        "long_window": 26,
+        "trend_period": 100,
+        "rsi_oversold_buy": false
+      },
+      "label": "ema12/26 trend100 norsibuy",
+      "train": {
+        "total_return_pct": -21.5481849840584,
+        "total_trades": 28,
+        "profit_factor": 0.43999661485995334,
+        "max_drawdown_pct": 25.17305889213391,
+        "buy_hold_pct": -36.101096241257515
+      },
+      "validation": {
+        "total_return_pct": -7.679568592506518,
+        "total_trades": 13,
+        "profit_factor": 0.5885091277891746,
+        "max_drawdown_pct": 10.401639401659473,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 12,
+        "long_window": 26,
+        "trend_period": 200,
+        "rsi_oversold_buy": true
+      },
+      "label": "ema12/26 trend200 rsibuy",
+      "train": {
+        "total_return_pct": -13.763424861475823,
+        "total_trades": 22,
+        "profit_factor": 0.5619485162080413,
+        "max_drawdown_pct": 19.629840625888495,
+        "buy_hold_pct": -42.09402744868992
+      },
+      "validation": {
+        "total_return_pct": -5.312461026093763,
+        "total_trades": 9,
+        "profit_factor": 0.531425847883455,
+        "max_drawdown_pct": 8.049979992156619,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 12,
+        "long_window": 26,
+        "trend_period": 200,
+        "rsi_oversold_buy": false
+      },
+      "label": "ema12/26 trend200 norsibuy",
+      "train": {
+        "total_return_pct": -13.661937605280572,
+        "total_trades": 20,
+        "profit_factor": 0.4972367709056368,
+        "max_drawdown_pct": 16.245651229594696,
+        "buy_hold_pct": -42.09402744868992
+      },
+      "validation": {
+        "total_return_pct": -5.312461026093763,
+        "total_trades": 9,
+        "profit_factor": 0.531425847883455,
+        "max_drawdown_pct": 8.049979992156619,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 20,
+        "long_window": 50,
+        "trend_period": 0,
+        "rsi_oversold_buy": true
+      },
+      "label": "ema20/50 notrend rsibuy",
+      "train": {
+        "total_return_pct": -51.2821816786634,
+        "total_trades": 65,
+        "profit_factor": 0.40997634222480117,
+        "max_drawdown_pct": 52.43286614604816,
+        "buy_hold_pct": -27.19051253599809
+      },
+      "validation": {
+        "total_return_pct": -38.10819339472441,
+        "total_trades": 31,
+        "profit_factor": 0.23599194415952926,
+        "max_drawdown_pct": 39.129036880672174,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 20,
+        "long_window": 50,
+        "trend_period": 0,
+        "rsi_oversold_buy": false
+      },
+      "label": "ema20/50 notrend norsibuy",
+      "train": {
+        "total_return_pct": -8.574247279283737,
+        "total_trades": 22,
+        "profit_factor": 0.6933880728605759,
+        "max_drawdown_pct": 24.65256691065137,
+        "buy_hold_pct": -27.19051253599809
+      },
+      "validation": {
+        "total_return_pct": -14.72772112249412,
+        "total_trades": 13,
+        "profit_factor": 0.30752950462769413,
+        "max_drawdown_pct": 14.72772112249412,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 20,
+        "long_window": 50,
+        "trend_period": 100,
+        "rsi_oversold_buy": true
+      },
+      "label": "ema20/50 trend100 rsibuy",
+      "train": {
+        "total_return_pct": -3.1193353414580542,
+        "total_trades": 14,
+        "profit_factor": 0.8159249599048012,
+        "max_drawdown_pct": 15.559760158443492,
+        "buy_hold_pct": -36.101096241257515
+      },
+      "validation": {
+        "total_return_pct": -10.19276233135505,
+        "total_trades": 11,
+        "profit_factor": 0.39793315585560546,
+        "max_drawdown_pct": 10.19276233135505,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 20,
+        "long_window": 50,
+        "trend_period": 100,
+        "rsi_oversold_buy": false
+      },
+      "label": "ema20/50 trend100 norsibuy",
+      "train": {
+        "total_return_pct": -3.1193353414580542,
+        "total_trades": 14,
+        "profit_factor": 0.8159249599048012,
+        "max_drawdown_pct": 15.559760158443492,
+        "buy_hold_pct": -36.101096241257515
+      },
+      "validation": {
+        "total_return_pct": -10.19276233135505,
+        "total_trades": 11,
+        "profit_factor": 0.39793315585560546,
+        "max_drawdown_pct": 10.19276233135505,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 20,
+        "long_window": 50,
+        "trend_period": 200,
+        "rsi_oversold_buy": true
+      },
+      "label": "ema20/50 trend200 rsibuy",
+      "train": {
+        "total_return_pct": 1.9103363849695825,
+        "total_trades": 8,
+        "profit_factor": 1.1572278797900348,
+        "max_drawdown_pct": 13.416205992522809,
+        "buy_hold_pct": -42.09402744868992
+      },
+      "validation": {
+        "total_return_pct": -10.864927636927268,
+        "total_trades": 7,
+        "profit_factor": 0.08653404617323619,
+        "max_drawdown_pct": 10.874655821181262,
+        "buy_hold_pct": -17.20299864338696
+      }
+    },
+    {
+      "variant": {
+        "short_window": 20,
+        "long_window": 50,
+        "trend_period": 200,
+        "rsi_oversold_buy": false
+      },
+      "label": "ema20/50 trend200 norsibuy",
+      "train": {
+        "total_return_pct": 1.0846750720646583,
+        "total_trades": 6,
+        "profit_factor": 1.1450479085543999,
+        "max_drawdown_pct": 7.755596913321551,
+        "buy_hold_pct": -42.09402744868992
+      },
+      "validation": {
+        "total_return_pct": -10.864927636927268,
+        "total_trades": 7,
+        "profit_factor": 0.08653404617323619,
+        "max_drawdown_pct": 10.874655821181262,
+        "buy_hold_pct": -17.20299864338696
+      }
+    }
+  ]
+}

@@ -13,7 +13,7 @@ logged to `research/holdout_log.jsonl`. Select a version with `PROTOCOL=v1` (def
 | Version | Market | Status |
 |---|---|---|
 | v1 | DOGE/USDT | **Rejected** at step 3: all 18 variants lost money on train (DOGE −72%). Holdout unused. |
-| v2 | ETH/USDT | Pre-registered; see "v2" below. |
+| v2 | ETH/USDT | **Rejected** at step 3: 2 of 18 variants were positive on train (+1.9%, +1.1%; ETH −28.7%), both lost 10.9% on validation. Timeframe 4h. Holdout unused. |
 
 The rules below were written for v1 and apply unchanged to every version unless a version's
 section says otherwise.
