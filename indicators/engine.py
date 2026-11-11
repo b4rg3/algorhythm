@@ -23,6 +23,11 @@ class IndicatorEngine:
         df["ema_long"] = ta.ema(df["close"], length=self.config.long_window)
         df["rsi"] = ta.rsi(df["close"], length=self.config.rsi_period)
 
+        required = ["sma_short", "sma_long", "ema_short", "ema_long", "rsi"]
+        if self.config.trend_period > 0:
+            df["trend_ma"] = ta.ema(df["close"], length=self.config.trend_period)
+            required.append("trend_ma")
+
         short_above_long = df["ema_short"] > df["ema_long"]
         prev_short_above_long = short_above_long.shift(1, fill_value=False)
 
@@ -30,7 +35,4 @@ class IndicatorEngine:
         df.loc[short_above_long & ~prev_short_above_long, "crossover"] = 1
         df.loc[~short_above_long & prev_short_above_long, "crossover"] = -1
 
-        df = df.dropna(
-            subset=["sma_short", "sma_long", "ema_short", "ema_long", "rsi"]
-        )
-        return df
+        return df.dropna(subset=required)

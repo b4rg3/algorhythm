@@ -22,8 +22,9 @@ account or credentials are required.
 python main.py
 ```
 
-On startup, the bot runs one trading cycle immediately, then repeats every 15 minutes. Each
-cycle fetches the latest candles, computes indicators, checks for a signal, and (if triggered)
+On startup, the bot runs one trading cycle immediately, then checks every minute and acts once
+per newly closed candle (for any `TIMEFRAME`). Each cycle fetches the latest candles, computes
+indicators, checks for a signal, and (if triggered)
 executes a simulated trade, printing indicator values, trades, and portfolio value to the
 console.
 
@@ -43,6 +44,9 @@ Signal rules:
 - **BUY** — RSI is below the oversold threshold, OR a golden cross occurred with RSI below overbought.
 - **SELL** — death cross occurred, or RSI is above the overbought threshold.
 - **HOLD** — otherwise.
+
+Optional filters: `TREND_PERIOD` (only buy while price is above an EMA of that length) and
+`RSI_OVERSOLD_BUY=0` (disable the oversold buy rule). Both are off/unchanged by default.
 
 Position sizing risks a fixed percentage of the current balance per trade (default 2%), and
 every open position carries a stop-loss (default 3% from entry) that is checked on every cycle.
@@ -68,6 +72,19 @@ python backtest.py --days 90
 Backtest history comes from `HISTORY_EXCHANGE` (default `kucoin`), not the live exchange:
 Kraken's public OHLC endpoint only returns its most recent 720 candles (~7.5 days at 15m).
 The fetcher checks coverage and errors out rather than silently backtesting a shorter period.
+
+## Research protocol
+
+Strategy changes are evaluated under a pre-registered protocol (see `RESEARCH.md`) to avoid
+fitting settings to past noise:
+
+```bash
+python timeframe_costs.py   # step 1: pick timeframe from costs vs volatility (train data only)
+python sweep.py             # steps 2-3: fixed variant grid on train/validation, selection rule
+python holdout.py           # step 4: selected variant on the untouched holdout, runs once
+```
+
+Decisions and results are written to `research/` and committed.
 
 ## Disclaimer
 

@@ -9,6 +9,7 @@ from rich.table import Table
 
 from backtest.runner import Backtester
 from config import Config
+from data.coingecko import cross_check
 from data.fetcher import DataFetcher
 from logger.trade_log import _price_fmt
 
@@ -40,7 +41,13 @@ def print_report(results: dict, days: int, config: Config, df) -> None:
         f"{df.index[0]:%Y-%m-%d %H:%M} to {df.index[-1]:%Y-%m-%d %H:%M} UTC  ({len(df)} candles)",
     )
     summary.add_row("MA windows", f"EMA {config.short_window} / {config.long_window}")
-    summary.add_row("RSI period", f"{config.rsi_period}  (ob={config.rsi_overbought} os={config.rsi_oversold})")
+    summary.add_row(
+        "RSI period",
+        f"{config.rsi_period}  (ob={config.rsi_overbought} os={config.rsi_oversold}, "
+        f"oversold buy {'on' if config.rsi_oversold_buy else 'off'})",
+    )
+    summary.add_row("Trend filter", f"EMA {config.trend_period}" if config.trend_period else "off")
+    summary.add_row("Buy & hold", _pct(r["buy_hold_pct"]))
     summary.add_row("", "")
     summary.add_row("Start balance", f"{r['start_balance']:.2f} USDT")
     summary.add_row("Final value", f"{r['final_value']:.2f} USDT")
@@ -104,6 +111,7 @@ def print_report(results: dict, days: int, config: Config, df) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="algorhythm backtester")
     parser.add_argument("--days", type=int, default=30, help="Days of history to backtest (default 30)")
+    parser.add_argument("--no-crosscheck", action="store_true", help="Skip the CoinGecko data check")
     args = parser.parse_args()
 
     config = Config()
@@ -120,6 +128,18 @@ def main() -> None:
         console.print(f"[bold red]ERROR:[/bold red] {exc}")
         raise SystemExit(1)
     console.print(f"[dim]  {len(df)} candles fetched.[/dim]")
+
+    if not args.no_crosscheck:
+        try:
+            check = cross_check(df, config.coingecko_id, config.timeframe)
+            color = "green" if check.ok else "bold red"
+            console.print(f"[{color}]CoinGecko cross-check {check.summary()}[/{color}]")
+            if not check.ok:
+                console.print(
+                    "[bold red]Exchange data doesn't track CoinGecko; results may be unreliable.[/bold red]"
+                )
+        except RuntimeError as exc:
+            console.print(f"[yellow]CoinGecko cross-check unavailable: {exc}[/yellow]")
 
     console.print("[cyan]Running backtest...[/cyan]")
     bt = Backtester(config)

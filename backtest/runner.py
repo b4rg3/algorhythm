@@ -24,15 +24,33 @@ class Backtester:
         self.strategy = MARSIStrategy(config)
         self.risk_manager = RiskManager(config)
 
-    def run(self, df: pd.DataFrame) -> dict:
-        """Run the backtest and return a results dict."""
+    def run(
+        self,
+        df: pd.DataFrame,
+        start: pd.Timestamp | None = None,
+        end: pd.Timestamp | None = None,
+    ) -> dict:
+        """Run the backtest and return a results dict.
+
+        Indicators are computed over the whole of `df` (so earlier candles serve as warm-up),
+        but trading only happens on candles in [start, end). This lets a held-out test
+        period start with fully warmed-up indicators and no lookahead.
+        """
         df = self.engine.calculate(df)
+        if end is not None:
+            df = df[df.index < end]
+        first = 1
+        if start is not None:
+            first = max(1, int(df.index.searchsorted(start)))
+        if first >= len(df):
+            raise ValueError("No candles in the requested backtest window after indicator warm-up.")
+
         trader = PaperTrader(self.config, state_path=None)
 
         trades: list[dict] = []
         equity: list[float] = []
 
-        for i in range(1, len(df)):
+        for i in range(first, len(df)):
             slice_df = df.iloc[: i + 1]
             candle = slice_df.iloc[-1]
             ts = slice_df.index[-1]
@@ -48,7 +66,13 @@ class Backtester:
         final_price = float(df.iloc[-1]["close"])
         final_value = trader.portfolio_value(final_price)
 
-        return self._metrics(trades, equity, final_value, trader, final_price)
+        results = self._metrics(trades, equity, final_value, trader, final_price)
+        start_price = float(df.iloc[first - 1]["close"])
+        results["buy_hold_pct"] = (final_price / start_price - 1) * 100
+        results["period_start"] = df.index[first]
+        results["period_end"] = df.index[-1]
+        results["candles"] = len(df) - first
+        return results
 
     def _metrics(
         self,

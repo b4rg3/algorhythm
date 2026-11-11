@@ -38,6 +38,14 @@ class Config:
     rsi_period: int = _env_int("RSI_PERIOD", 14)
     rsi_overbought: float = _env_float("RSI_OVERBOUGHT", 70.0)
     rsi_oversold: float = _env_float("RSI_OVERSOLD", 30.0)
+    # Buy when RSI drops below RSI_OVERSOLD, even without a crossover (1 = on, 0 = off).
+    rsi_oversold_buy: bool = os.getenv("RSI_OVERSOLD_BUY", "1") not in ("0", "false", "False")
+
+    # Trend filter: only open longs while close is above an EMA of this length. 0 = disabled.
+    trend_period: int = _env_int("TREND_PERIOD", 0)
+
+    # CoinGecko coin id used to cross-check backtest price data.
+    coingecko_id: str = os.getenv("COINGECKO_ID", "dogecoin")
 
     paper_balance_usdt: float = _env_float("PAPER_BALANCE_USDT", 1000.0)
     risk_per_trade_pct: float = _env_float("RISK_PER_TRADE_PCT", 0.02)

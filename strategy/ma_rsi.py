@@ -18,12 +18,16 @@ class MARSIStrategy:
             return "HOLD"
 
         last = df.iloc[-1]
+        cfg = self.config
 
-        if last["rsi"] < self.config.rsi_oversold:
+        # Trend filter: new longs only while price is above the long-term EMA.
+        uptrend = cfg.trend_period <= 0 or last["close"] > last["trend_ma"]
+
+        if cfg.rsi_oversold_buy and uptrend and last["rsi"] < cfg.rsi_oversold:
             return "BUY"
-        if last["crossover"] == -1 or last["rsi"] > self.config.rsi_overbought:
+        if last["crossover"] == -1 or last["rsi"] > cfg.rsi_overbought:
             return "SELL"
-        if last["crossover"] == 1 and last["rsi"] < self.config.rsi_overbought:
+        if uptrend and last["crossover"] == 1 and last["rsi"] < cfg.rsi_overbought:
             return "BUY"
         return "HOLD"
 
@@ -37,5 +41,6 @@ class MARSIStrategy:
             "ema_long": last["ema_long"],
             "rsi": last["rsi"],
             "crossover": last["crossover"],
+            "trend_ma": last.get("trend_ma"),
             "signal": self.signal(df),
         }

@@ -23,11 +23,15 @@ risk_manager = RiskManager(config)
 trader = PaperTrader(config)
 logger = TradeLogger()
 
+# Enough history for the slowest indicator to warm up (EMAs need several multiples of their
+# length to converge). Kraken serves at most 720 candles.
+CANDLE_LIMIT = min(720, 3 * max(config.long_window, config.trend_period, config.rsi_period) + 10)
+
 
 def run_cycle() -> None:
     """Fetch data, compute indicators, evaluate the strategy, and execute trades."""
     try:
-        df = fetcher.fetch_candles()
+        df = fetcher.fetch_candles(limit=CANDLE_LIMIT)
         df = engine.calculate(df)
 
         if df.empty:
@@ -86,7 +90,9 @@ if __name__ == "__main__":
 
     run_cycle()
 
-    schedule.every(15).minutes.do(run_cycle)
+    # Poll every minute; run_cycle only acts when a new candle has closed, so this works
+    # for any TIMEFRAME and reacts within a minute of each candle close.
+    schedule.every(1).minutes.do(run_cycle)
 
     while True:
         schedule.run_pending()

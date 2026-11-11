@@ -34,9 +34,10 @@ class DataFetcher:
 
         return self._drop_incomplete(self._to_dataframe(raw))
 
-    def fetch_history(self, days: int = 30) -> pd.DataFrame:
-        """Fetch paginated OHLCV history covering the last `days` calendar days.
+    def fetch_history(self, days: int = 30, end: pd.Timestamp | None = None) -> pd.DataFrame:
+        """Fetch paginated OHLCV history covering the `days` calendar days before `end`.
 
+        `end` defaults to now. Pass a fixed `end` for reproducible research windows.
         Raises if the exchange can't serve the requested range (e.g. Kraken, which
         silently returns only its latest 720 candles regardless of `since`).
         """
@@ -44,12 +45,13 @@ class DataFetcher:
         tf_ms = minutes * 60 * 1000
         per_request = 300  # within every supported exchange's page limit (Coinbase is 300)
 
-        start_ms = int((time.time() - days * 86400) * 1000)
         now_ms = int(time.time() * 1000)
+        end_ms = min(int(end.timestamp() * 1000), now_ms) if end is not None else now_ms
+        start_ms = end_ms - days * 86_400_000
         since_ms = start_ms
 
         all_raw: list = []
-        while since_ms < now_ms:
+        while since_ms < end_ms:
             try:
                 batch = self.exchange.fetch_ohlcv(
                     self.config.symbol,
@@ -77,12 +79,16 @@ class DataFetcher:
         df = self._to_dataframe(all_raw)
         df = df[~df.index.duplicated(keep="last")]
         df = df[df.index >= pd.Timestamp(start_ms, unit="ms", tz="UTC")]
+        # Keep only candles that closed by `end`.
+        df = df[df.index + pd.Timedelta(minutes=minutes) <= pd.Timestamp(end_ms, unit="ms", tz="UTC")]
         df.sort_index(inplace=True)
+        if df.empty:
+            raise RuntimeError(f"No historical data returned by {self.exchange_id} in the requested window.")
 
         # Coverage check: the first candle should be near the requested start.
         first_ms = int(df.index[0].timestamp() * 1000)
         if first_ms - start_ms > 2 * tf_ms:
-            got_days = (now_ms - first_ms) / 86_400_000
+            got_days = (end_ms - first_ms) / 86_400_000
             raise RuntimeError(
                 f"{self.exchange_id} only returned {got_days:.1f} of the {days} requested days "
                 f"(first candle {df.index[0]:%Y-%m-%d %H:%M} UTC). "
