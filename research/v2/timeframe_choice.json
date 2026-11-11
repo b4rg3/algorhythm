@@ -1,0 +1,61 @@
+{
+  "protocol": "v2",
+  "symbol": "ETH/USDT",
+  "rule": "fastest timeframe with median ATR(14)% >= 2.0 x round-trip cost (1.80%)",
+  "round_trip_cost_pct": 0.9000000000000001,
+  "train_segment": [
+    "2024-11-11 00:00:00+00:00",
+    "2026-02-02 00:00:00+00:00"
+  ],
+  "stats": [
+    {
+      "timeframe": "15m",
+      "candles": 43008,
+      "median_atr_pct": 0.45299322067882847,
+      "median_abs_close_move_pct": 0.1716063695210268,
+      "atr_to_cost": 0.5033258007542538,
+      "passes": false
+    },
+    {
+      "timeframe": "30m",
+      "candles": 21504,
+      "median_atr_pct": 0.6657091183322803,
+      "median_abs_close_move_pct": 0.2349043409779039,
+      "atr_to_cost": 0.739676798146978,
+      "passes": false
+    },
+    {
+      "timeframe": "1h",
+      "candles": 10752,
+      "median_atr_pct": 0.9822146119774016,
+      "median_abs_close_move_pct": 0.3307159752449107,
+      "atr_to_cost": 1.0913495688637793,
+      "passes": false
+    },
+    {
+      "timeframe": "2h",
+      "candles": 5376,
+      "median_atr_pct": 1.4291943635782678,
+      "median_abs_close_move_pct": 0.4764170896785158,
+      "atr_to_cost": 1.5879937373091861,
+      "passes": false
+    },
+    {
+      "timeframe": "4h",
+      "candles": 2688,
+      "median_atr_pct": 2.0622781990553913,
+      "median_abs_close_move_pct": 0.6684116827137654,
+      "atr_to_cost": 2.2914202211726566,
+      "passes": true
+    },
+    {
+      "timeframe": "1d",
+      "candles": 448,
+      "median_atr_pct": 5.689319076253557,
+      "median_abs_close_move_pct": 1.953645226222478,
+      "atr_to_cost": 6.321465640281729,
+      "passes": true
+    }
+  ],
+  "chosen": "4h"
+}
