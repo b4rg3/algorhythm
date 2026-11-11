@@ -119,15 +119,18 @@ def cross_check(df: pd.DataFrame, coin_id: str, timeframe: str) -> CrossCheck:
 
     # A candle's close is the price at the END of its interval.
     ex = pd.DataFrame({"ex_close": df["close"].values}, index=df.index + tf)
-    cg = fetch_prices(coin_id, df.index[0], df.index[-1] + tf).to_frame()
+    cg = fetch_prices(coin_id, df.index[0], df.index[-1] + tf).rename("cg_price").to_frame()
 
+    # Pair each exchange close with a CoinGecko point taken at (nearly) the same moment.
+    # CoinGecko's hourly points land within minutes of the hour, so 35 minutes is enough
+    # to pair them up without comparing prices from different times.
     merged = pd.merge_asof(
-        cg.sort_index(),
         ex.sort_index(),
+        cg.sort_index(),
         left_index=True,
         right_index=True,
         direction="nearest",
-        tolerance=tf,
+        tolerance=pd.Timedelta(minutes=35),
     ).dropna()
     if merged.empty:
         raise RuntimeError("No overlapping timestamps between exchange data and CoinGecko.")

@@ -3,6 +3,7 @@
 import pandas as pd
 
 from config import Config
+from indicators.engine import IndicatorEngine
 
 
 class MARSIStrategy:
@@ -11,6 +12,11 @@ class MARSIStrategy:
     def __init__(self, config: Config) -> None:
         """Store the strategy configuration."""
         self.config = config
+        self.engine = IndicatorEngine(config)
+
+    def prepare(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add the moving average, RSI and crossover columns this strategy reads."""
+        return self.engine.calculate(df)
 
     def signal(self, df: pd.DataFrame) -> str:
         """Return the trading signal for the most recent completed candle."""

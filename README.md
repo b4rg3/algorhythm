@@ -45,7 +45,11 @@ Signal rules:
 - **SELL** — death cross occurred, or RSI is above the overbought threshold.
 - **HOLD** — otherwise.
 
-Optional filters: `TREND_PERIOD` (only buy while price is above an EMA of that length) and
+`STRATEGY=trend` switches to daily SMA trend-following (long above `TREND_SMA_PERIOD`-day
+SMA, cash below, with an optional `TREND_BAND`), usually paired with `SIZING_MODE=allocation`
+and `USE_STOP_LOSS=0`.
+
+Optional filters for the default strategy: `TREND_PERIOD` (only buy while price is above an EMA of that length) and
 `RSI_OVERSOLD_BUY=0` (disable the oversold buy rule). Both are off/unchanged by default.
 
 Position sizing risks a fixed percentage of the current balance per trade (default 2%), and
@@ -84,7 +88,24 @@ python sweep.py             # steps 2-3: fixed variant grid on train/validation,
 python holdout.py           # step 4: selected variant on the untouched holdout, runs once
 ```
 
-Decisions and results are written to `research/` and committed.
+Decisions and results are written to `research/` and committed. Protocol v3 (daily
+trend-following on BTC, ETH and DOGE) has its own runner:
+
+```bash
+python research_v3.py sweep
+python research_v3.py holdout
+```
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
+```
+
+The tests run offline (exchange and CoinGecko calls are faked). They cover fills, fees,
+stops, sizing, persistence, strategy rules, no-lookahead in the backtester, history
+pagination and rate-limit retries, and the CoinGecko cross-check.
 
 ## Disclaimer
 

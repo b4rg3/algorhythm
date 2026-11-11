@@ -33,6 +33,13 @@ class Config:
     # Set it to the same value as EXCHANGE to backtest on the live venue's data.
     history_exchange: str = os.getenv("HISTORY_EXCHANGE", "kucoin")
 
+    # Which strategy to run: "ma_rsi" (EMA crossover + RSI) or "trend" (daily SMA trend-following).
+    strategy: str = os.getenv("STRATEGY", "ma_rsi")
+
+    # Trend-following strategy: long above SMA * (1 + band), cash below SMA * (1 - band).
+    trend_sma_period: int = _env_int("TREND_SMA_PERIOD", 200)
+    trend_band: float = _env_float("TREND_BAND", 0.0)
+
     short_window: int = _env_int("SHORT_WINDOW", 9)
     long_window: int = _env_int("LONG_WINDOW", 21)
     rsi_period: int = _env_int("RSI_PERIOD", 14)
@@ -50,6 +57,12 @@ class Config:
     paper_balance_usdt: float = _env_float("PAPER_BALANCE_USDT", 1000.0)
     risk_per_trade_pct: float = _env_float("RISK_PER_TRADE_PCT", 0.02)
     stop_loss_pct: float = _env_float("STOP_LOSS_PCT", 0.03)
+
+    # Position sizing: "risk" sizes so a stop-out loses RISK_PER_TRADE_PCT of balance;
+    # "allocation" invests ALLOCATION_PCT of the available balance.
+    sizing_mode: str = os.getenv("SIZING_MODE", "risk")
+    allocation_pct: float = _env_float("ALLOCATION_PCT", 1.0)
+    use_stop_loss: bool = os.getenv("USE_STOP_LOSS", "1") not in ("0", "false", "False")
 
     # Execution cost model (fractions, e.g. 0.004 = 0.40%). Defaults approximate
     # Kraken's entry-tier taker fee plus a small slippage allowance.

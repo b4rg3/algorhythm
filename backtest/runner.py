@@ -10,9 +10,8 @@ import pandas as pd
 
 from config import Config
 from execution.paper_trader import PaperTrader
-from indicators.engine import IndicatorEngine
 from risk.manager import RiskManager
-from strategy.ma_rsi import MARSIStrategy
+from strategy.factory import make_strategy
 
 
 class Backtester:
@@ -20,8 +19,7 @@ class Backtester:
 
     def __init__(self, config: Config) -> None:
         self.config = config
-        self.engine = IndicatorEngine(config)
-        self.strategy = MARSIStrategy(config)
+        self.strategy = make_strategy(config)
         self.risk_manager = RiskManager(config)
 
     def run(
@@ -36,7 +34,7 @@ class Backtester:
         but trading only happens on candles in [start, end). This lets a held-out test
         period start with fully warmed-up indicators and no lookahead.
         """
-        df = self.engine.calculate(df)
+        df = self.strategy.prepare(df)
         if end is not None:
             df = df[df.index < end]
         first = 1

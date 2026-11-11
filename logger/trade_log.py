@@ -54,21 +54,21 @@ class TradeLogger:
     # ------------------------------------------------------------------
 
     def log_candle(self, indicators: dict) -> None:
-        """Print a compact, color-coded one-line summary of current indicators."""
+        """Print a compact, color-coded one-line summary of the strategy's indicators."""
         signal = indicators.get("signal", "HOLD")
         color = {"BUY": "green", "SELL": "red"}.get(signal, "dim")
 
-        p = _price_fmt
-        line = (
-            f"[{color}]{signal:<4}[/{color}] "
-            f"sma_short={p(indicators['sma_short'])} "
-            f"sma_long={p(indicators['sma_long'])} "
-            f"ema_short={p(indicators['ema_short'])} "
-            f"ema_long={p(indicators['ema_long'])} "
-            f"rsi={indicators['rsi']:.2f} "
-            f"crossover={indicators['crossover']}"
-        )
-        self.console.print(line)
+        parts = []
+        for key, value in indicators.items():
+            if key == "signal" or value is None:
+                continue
+            if key == "rsi":
+                parts.append(f"rsi={value:.2f}")
+            elif key in ("crossover", "band"):
+                parts.append(f"{key}={value}")
+            elif isinstance(value, (int, float)):
+                parts.append(f"{key}={_price_fmt(value)}")
+        self.console.print(f"[{color}]{signal:<4}[/{color}] " + " ".join(parts))
 
     def log_trade(self, trade: dict) -> None:
         """Print a rich panel summarizing a trade and append it to the log file."""
@@ -79,7 +79,7 @@ class TradeLogger:
         table = Table(show_header=False, box=None)
         table.add_row("Price", p(trade["price"]))
         table.add_row("Quantity", f"{trade['quantity']:.6f}")
-        if "stop_loss" in trade:
+        if trade.get("stop_loss") is not None:
             table.add_row("Stop Loss", p(trade["stop_loss"]))
         if "fee" in trade:
             table.add_row("Fee", f"{trade['fee']:.4f}")
@@ -101,7 +101,7 @@ class TradeLogger:
             "balance_usdt": trade["balance_usdt"],
             "balance_base": trade["balance_base"],
         }
-        if "stop_loss" in trade:
+        if trade.get("stop_loss") is not None:
             entry["stop_loss"] = trade["stop_loss"]
         if "fee" in trade:
             entry["fee"] = trade["fee"]

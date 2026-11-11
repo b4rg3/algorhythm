@@ -94,8 +94,8 @@ class PaperTrader:
         close = float(candle["close"])
 
         if self.position is not None:
-            stop = self.position["stop_loss"]
-            if low <= stop:
+            stop = self.position.get("stop_loss")
+            if stop is not None and low <= stop:
                 trigger = min(stop, open_)  # gap-down fills at the open, not the stop
                 return self._close_position(trigger, action="STOP_LOSS")
 
@@ -111,9 +111,11 @@ class PaperTrader:
         fee_pct = self.config.fee_pct
         fill = price * (1 + self.config.slippage_pct)
 
-        quantity = risk_manager.position_size(self.balance_usdt, fill)
-        if quantity * fill * (1 + fee_pct) > self.balance_usdt:
-            quantity = int(self.balance_usdt / (fill * (1 + fee_pct)) * 1e6) / 1e6
+        max_quantity = int(self.balance_usdt / (fill * (1 + fee_pct)) * 1e6) / 1e6
+        if self.config.sizing_mode == "allocation":
+            quantity = int(max_quantity * self.config.allocation_pct * 1e6) / 1e6
+        else:
+            quantity = min(risk_manager.position_size(self.balance_usdt, fill), max_quantity)
 
         notional = quantity * fill
         fee = notional * fee_pct
@@ -121,7 +123,7 @@ class PaperTrader:
         self.balance_base += quantity
         self.total_fees += fee
 
-        stop_loss = risk_manager.stop_loss_price(fill, "BUY")
+        stop_loss = risk_manager.stop_loss_price(fill, "BUY") if self.config.use_stop_loss else None
         self.position = {
             "side": "BUY",
             "entry_price": fill,

@@ -10,29 +10,32 @@ from rich.panel import Panel
 from config import Config
 from data.fetcher import DataFetcher
 from execution.paper_trader import PaperTrader, STATE_PATH
-from indicators.engine import IndicatorEngine
 from logger.trade_log import TradeLogger
 from risk.manager import RiskManager
-from strategy.ma_rsi import MARSIStrategy
+from strategy.factory import make_strategy
 
 config = Config()
 fetcher = DataFetcher(config)
-engine = IndicatorEngine(config)
-strategy = MARSIStrategy(config)
+strategy = make_strategy(config)
 risk_manager = RiskManager(config)
 trader = PaperTrader(config)
 logger = TradeLogger()
 
 # Enough history for the slowest indicator to warm up (EMAs need several multiples of their
 # length to converge). Kraken serves at most 720 candles.
-CANDLE_LIMIT = min(720, 3 * max(config.long_window, config.trend_period, config.rsi_period) + 10)
+_SLOWEST = (
+    config.trend_sma_period
+    if config.strategy == "trend"
+    else max(config.long_window, config.trend_period, config.rsi_period)
+)
+CANDLE_LIMIT = min(720, 3 * _SLOWEST + 10)
 
 
 def run_cycle() -> None:
     """Fetch data, compute indicators, evaluate the strategy, and execute trades."""
     try:
         df = fetcher.fetch_candles(limit=CANDLE_LIMIT)
-        df = engine.calculate(df)
+        df = strategy.prepare(df)
 
         if df.empty:
             logger.log_error("No indicator data available yet.")

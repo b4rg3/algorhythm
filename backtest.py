@@ -40,13 +40,26 @@ def print_report(results: dict, days: int, config: Config, df) -> None:
         "Period",
         f"{df.index[0]:%Y-%m-%d %H:%M} to {df.index[-1]:%Y-%m-%d %H:%M} UTC  ({len(df)} candles)",
     )
-    summary.add_row("MA windows", f"EMA {config.short_window} / {config.long_window}")
-    summary.add_row(
-        "RSI period",
-        f"{config.rsi_period}  (ob={config.rsi_overbought} os={config.rsi_oversold}, "
-        f"oversold buy {'on' if config.rsi_oversold_buy else 'off'})",
+    if config.strategy == "trend":
+        summary.add_row(
+            "Strategy",
+            f"trend: SMA {config.trend_sma_period}, band {config.trend_band * 100:.1f}%",
+        )
+    else:
+        summary.add_row("MA windows", f"EMA {config.short_window} / {config.long_window}")
+        summary.add_row(
+            "RSI period",
+            f"{config.rsi_period}  (ob={config.rsi_overbought} os={config.rsi_oversold}, "
+            f"oversold buy {'on' if config.rsi_oversold_buy else 'off'})",
+        )
+        summary.add_row("Trend filter", f"EMA {config.trend_period}" if config.trend_period else "off")
+    sizing = (
+        f"allocation {config.allocation_pct * 100:.0f}%"
+        if config.sizing_mode == "allocation"
+        else f"risk {config.risk_per_trade_pct * 100:.1f}%"
     )
-    summary.add_row("Trend filter", f"EMA {config.trend_period}" if config.trend_period else "off")
+    stop = f"stop {config.stop_loss_pct * 100:.1f}%" if config.use_stop_loss else "no stop"
+    summary.add_row("Sizing", f"{sizing}, {stop}")
     summary.add_row("Buy & hold", _pct(r["buy_hold_pct"]))
     summary.add_row("", "")
     summary.add_row("Start balance", f"{r['start_balance']:.2f} USDT")
