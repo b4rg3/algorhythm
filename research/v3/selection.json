@@ -1,0 +1,560 @@
+{
+  "protocol": "v3",
+  "status": "selected",
+  "reason": "",
+  "selected": {
+    "sma": 100,
+    "band": 0.02
+  },
+  "fragility": {
+    "neighbours": 2,
+    "positive_on_validation": 2,
+    "fragile": false
+  },
+  "results": [
+    {
+      "variant": {
+        "sma": 50,
+        "band": 0.0
+      },
+      "label": "SMA50 band0%",
+      "markets": {
+        "BTC/USDT": {
+          "train": {
+            "total_return_pct": 798.1780921123543,
+            "total_trades": 32,
+            "profit_factor": 1.6675758390068978,
+            "max_drawdown_pct": 61.368137420209,
+            "buy_hold_pct": 487.61959686216744,
+            "total_fees": 1392.2946645132863
+          },
+          "validation": {
+            "total_return_pct": 30.002402065550406,
+            "total_trades": 32,
+            "profit_factor": 1.2894015098051994,
+            "max_drawdown_pct": 30.480451754410076,
+            "buy_hold_pct": 50.12415632818892,
+            "total_fees": 349.2125897131501
+          }
+        },
+        "ETH/USDT": {
+          "train": {
+            "total_return_pct": 866.8027928826926,
+            "total_trades": 42,
+            "profit_factor": 1.549919963064729,
+            "max_drawdown_pct": 58.785016081020956,
+            "buy_hold_pct": 1666.2848297213625,
+            "total_fees": 2359.3938274197208
+          },
+          "validation": {
+            "total_return_pct": 83.69450108857173,
+            "total_trades": 21,
+            "profit_factor": 1.7775583085174107,
+            "max_drawdown_pct": 40.785643899232646,
+            "buy_hold_pct": -17.621514083889846,
+            "total_fees": 218.44906763150712
+          }
+        },
+        "DOGE/USDT": {
+          "train": {
+            "total_return_pct": 6339.949122276288,
+            "total_trades": 36,
+            "profit_factor": 1.3482576920870741,
+            "max_drawdown_pct": 87.88792141271654,
+            "buy_hold_pct": 4353.455992043759,
+            "total_fees": 18291.08693626739
+          },
+          "validation": {
+            "total_return_pct": 12.869380435912445,
+            "total_trades": 28,
+            "profit_factor": 1.0418497023262416,
+            "max_drawdown_pct": 78.19180350655522,
+            "buy_hold_pct": -22.174209180540206,
+            "total_fees": 401.00909519652635
+          }
+        }
+      },
+      "train_positive_markets": 3,
+      "train_min_trades": 32,
+      "train_mean_return": 2668.3100024237783,
+      "validation_mean_return": 42.18876119667819,
+      "survives": true
+    },
+    {
+      "variant": {
+        "sma": 50,
+        "band": 0.02
+      },
+      "label": "SMA50 band2%",
+      "markets": {
+        "BTC/USDT": {
+          "train": {
+            "total_return_pct": 880.4852308828904,
+            "total_trades": 17,
+            "profit_factor": 2.0917848939385983,
+            "max_drawdown_pct": 55.923166433128614,
+            "buy_hold_pct": 487.61959686216744,
+            "total_fees": 738.0364497199356
+          },
+          "validation": {
+            "total_return_pct": 18.58838675610125,
+            "total_trades": 16,
+            "profit_factor": 1.2088913095280505,
+            "max_drawdown_pct": 37.410779343238616,
+            "buy_hold_pct": 50.12415632818892,
+            "total_fees": 178.12624456919158
+          }
+        },
+        "ETH/USDT": {
+          "train": {
+            "total_return_pct": 1617.0873028838785,
+            "total_trades": 20,
+            "profit_factor": 2.0129128326071215,
+            "max_drawdown_pct": 52.85547357612322,
+            "buy_hold_pct": 1666.2848297213625,
+            "total_fees": 1954.4653054112016
+          },
+          "validation": {
+            "total_return_pct": 31.31824201699353,
+            "total_trades": 15,
+            "profit_factor": 1.2206695292362206,
+            "max_drawdown_pct": 49.086497090038364,
+            "buy_hold_pct": -17.621514083889846,
+            "total_fees": 142.88772466898268
+          }
+        },
+        "DOGE/USDT": {
+          "train": {
+            "total_return_pct": 7892.144446474427,
+            "total_trades": 21,
+            "profit_factor": 1.5384029055221222,
+            "max_drawdown_pct": 83.09330709380917,
+            "buy_hold_pct": 4353.455992043759,
+            "total_fees": 12810.442414076702
+          },
+          "validation": {
+            "total_return_pct": 95.06192435787837,
+            "total_trades": 14,
+            "profit_factor": 1.375020666029963,
+            "max_drawdown_pct": 66.2349631322207,
+            "buy_hold_pct": -22.174209180540206,
+            "total_fees": 256.1432012169373
+          }
+        }
+      },
+      "train_positive_markets": 3,
+      "train_min_trades": 17,
+      "train_mean_return": 3463.238993413732,
+      "validation_mean_return": 48.322851043657714,
+      "survives": true
+    },
+    {
+      "variant": {
+        "sma": 100,
+        "band": 0.0
+      },
+      "label": "SMA100 band0%",
+      "markets": {
+        "BTC/USDT": {
+          "train": {
+            "total_return_pct": 481.6362299901748,
+            "total_trades": 24,
+            "profit_factor": 1.9820955553267248,
+            "max_drawdown_pct": 41.019984244755754,
+            "buy_hold_pct": 487.61959686216744,
+            "total_fees": 604.7430874345812
+          },
+          "validation": {
+            "total_return_pct": 31.620973739496755,
+            "total_trades": 21,
+            "profit_factor": 1.4267837178747413,
+            "max_drawdown_pct": 40.05852546983004,
+            "buy_hold_pct": 50.12415632818892,
+            "total_fees": 223.22871392843518
+          }
+        },
+        "ETH/USDT": {
+          "train": {
+            "total_return_pct": 256.44419602439405,
+            "total_trades": 32,
+            "profit_factor": 1.3092069019437784,
+            "max_drawdown_pct": 77.48039819400232,
+            "buy_hold_pct": 1666.2848297213625,
+            "total_fees": 873.8232388739323
+          },
+          "validation": {
+            "total_return_pct": 11.571197190047586,
+            "total_trades": 22,
+            "profit_factor": 1.130143731860871,
+            "max_drawdown_pct": 49.91656972307158,
+            "buy_hold_pct": -17.621514083889846,
+            "total_fees": 197.67122032576142
+          }
+        },
+        "DOGE/USDT": {
+          "train": {
+            "total_return_pct": 937.2820335244672,
+            "total_trades": 30,
+            "profit_factor": 1.158975992160177,
+            "max_drawdown_pct": 96.03662844192263,
+            "buy_hold_pct": 4353.455992043759,
+            "total_fees": 3878.362257019135
+          },
+          "validation": {
+            "total_return_pct": 78.78813042114375,
+            "total_trades": 16,
+            "profit_factor": 1.5545774461492952,
+            "max_drawdown_pct": 55.30296923685258,
+            "buy_hold_pct": -22.174209180540206,
+            "total_fees": 174.51225507417155
+          }
+        }
+      },
+      "train_positive_markets": 3,
+      "train_min_trades": 24,
+      "train_mean_return": 558.4541531796787,
+      "validation_mean_return": 40.660100450229365,
+      "survives": true
+    },
+    {
+      "variant": {
+        "sma": 100,
+        "band": 0.02
+      },
+      "label": "SMA100 band2%",
+      "markets": {
+        "BTC/USDT": {
+          "train": {
+            "total_return_pct": 744.2983528263921,
+            "total_trades": 8,
+            "profit_factor": 3.027511995071998,
+            "max_drawdown_pct": 44.128912556812594,
+            "buy_hold_pct": 487.61959686216744,
+            "total_fees": 314.4352217728904
+          },
+          "validation": {
+            "total_return_pct": 87.29076869876751,
+            "total_trades": 7,
+            "profit_factor": 2.5411498774117454,
+            "max_drawdown_pct": 29.194136188211072,
+            "buy_hold_pct": 50.12415632818892,
+            "total_fees": 102.1504694715758
+          }
+        },
+        "ETH/USDT": {
+          "train": {
+            "total_return_pct": 517.7674952116885,
+            "total_trades": 14,
+            "profit_factor": 1.7614373534469845,
+            "max_drawdown_pct": 67.84238955764846,
+            "buy_hold_pct": 1666.2848297213625,
+            "total_fees": 494.73175668408766
+          },
+          "validation": {
+            "total_return_pct": 64.12596857873638,
+            "total_trades": 7,
+            "profit_factor": 1.9954724710044947,
+            "max_drawdown_pct": 40.80398024096933,
+            "buy_hold_pct": -17.621514083889846,
+            "total_fees": 79.2957359962172
+          }
+        },
+        "DOGE/USDT": {
+          "train": {
+            "total_return_pct": 1177.6762014445746,
+            "total_trades": 19,
+            "profit_factor": 1.212955948072978,
+            "max_drawdown_pct": 95.05661853040269,
+            "buy_hold_pct": 4353.455992043759,
+            "total_fees": 2615.775970366594
+          },
+          "validation": {
+            "total_return_pct": 54.86775997569532,
+            "total_trades": 11,
+            "profit_factor": 1.38238686169659,
+            "max_drawdown_pct": 59.68707770212729,
+            "buy_hold_pct": -22.174209180540206,
+            "total_fees": 131.34436225117074
+          }
+        }
+      },
+      "train_positive_markets": 3,
+      "train_min_trades": 8,
+      "train_mean_return": 813.2473498275517,
+      "validation_mean_return": 68.76149908439973,
+      "survives": true
+    },
+    {
+      "variant": {
+        "sma": 150,
+        "band": 0.0
+      },
+      "label": "SMA150 band0%",
+      "markets": {
+        "BTC/USDT": {
+          "train": {
+            "total_return_pct": 525.3465360799795,
+            "total_trades": 16,
+            "profit_factor": 2.567983232591986,
+            "max_drawdown_pct": 45.82414939972415,
+            "buy_hold_pct": 487.61959686216744,
+            "total_fees": 434.4733685746704
+          },
+          "validation": {
+            "total_return_pct": 37.90362715091294,
+            "total_trades": 15,
+            "profit_factor": 1.5695594001959907,
+            "max_drawdown_pct": 30.349743244724735,
+            "buy_hold_pct": 50.12415632818892,
+            "total_fees": 172.0033552496214
+          }
+        },
+        "ETH/USDT": {
+          "train": {
+            "total_return_pct": 680.1082130460314,
+            "total_trades": 17,
+            "profit_factor": 2.223722992017502,
+            "max_drawdown_pct": 66.69860528032777,
+            "buy_hold_pct": 1666.2848297213625,
+            "total_fees": 613.1917125379464
+          },
+          "validation": {
+            "total_return_pct": 38.956524807210194,
+            "total_trades": 9,
+            "profit_factor": 2.022406734957192,
+            "max_drawdown_pct": 45.87112282790725,
+            "buy_hold_pct": -17.621514083889846,
+            "total_fees": 83.94959466287388
+          }
+        },
+        "DOGE/USDT": {
+          "train": {
+            "total_return_pct": 1318.6400460474297,
+            "total_trades": 25,
+            "profit_factor": 1.2410048865946945,
+            "max_drawdown_pct": 94.4432027479909,
+            "buy_hold_pct": 4353.455992043759,
+            "total_fees": 3491.0759799925177
+          },
+          "validation": {
+            "total_return_pct": 109.44423282300886,
+            "total_trades": 9,
+            "profit_factor": 2.2628955358211313,
+            "max_drawdown_pct": 59.4654205111199,
+            "buy_hold_pct": -22.174209180540206,
+            "total_fees": 154.74772279139168
+          }
+        }
+      },
+      "train_positive_markets": 3,
+      "train_min_trades": 16,
+      "train_mean_return": 841.3649317244802,
+      "validation_mean_return": 62.10146159371067,
+      "survives": true
+    },
+    {
+      "variant": {
+        "sma": 150,
+        "band": 0.02
+      },
+      "label": "SMA150 band2%",
+      "markets": {
+        "BTC/USDT": {
+          "train": {
+            "total_return_pct": 669.8312080935057,
+            "total_trades": 6,
+            "profit_factor": 7.116863028914765,
+            "max_drawdown_pct": 44.210878920014466,
+            "buy_hold_pct": 487.61959686216744,
+            "total_fees": 194.88158371930996
+          },
+          "validation": {
+            "total_return_pct": 38.50994453977189,
+            "total_trades": 7,
+            "profit_factor": 1.8675344058214145,
+            "max_drawdown_pct": 29.871285958699488,
+            "buy_hold_pct": 50.12415632818892,
+            "total_fees": 73.8860411972824
+          }
+        },
+        "ETH/USDT": {
+          "train": {
+            "total_return_pct": 662.8386173924715,
+            "total_trades": 10,
+            "profit_factor": 2.4603792241702283,
+            "max_drawdown_pct": 66.03104200885893,
+            "buy_hold_pct": 1666.2848297213625,
+            "total_fees": 395.03356634831704
+          },
+          "validation": {
+            "total_return_pct": 46.6947239609704,
+            "total_trades": 5,
+            "profit_factor": 2.5634976148876425,
+            "max_drawdown_pct": 42.856826153693746,
+            "buy_hold_pct": -17.621514083889846,
+            "total_fees": 47.524226219791586
+          }
+        },
+        "DOGE/USDT": {
+          "train": {
+            "total_return_pct": 772.2588332170893,
+            "total_trades": 20,
+            "profit_factor": 1.1868542597321672,
+            "max_drawdown_pct": 95.31762391562287,
+            "buy_hold_pct": 4353.455992043759,
+            "total_fees": 2208.6664312271564
+          },
+          "validation": {
+            "total_return_pct": 109.1564205796247,
+            "total_trades": 6,
+            "profit_factor": 2.6231484412377193,
+            "max_drawdown_pct": 55.91296697635138,
+            "buy_hold_pct": -22.174209180540206,
+            "total_fees": 92.44056494931614
+          }
+        }
+      },
+      "train_positive_markets": 3,
+      "train_min_trades": 6,
+      "train_mean_return": 701.6428862343555,
+      "validation_mean_return": 64.78702969345566,
+      "survives": true
+    },
+    {
+      "variant": {
+        "sma": 200,
+        "band": 0.0
+      },
+      "label": "SMA200 band0%",
+      "markets": {
+        "BTC/USDT": {
+          "train": {
+            "total_return_pct": 279.31780353674344,
+            "total_trades": 14,
+            "profit_factor": 1.948896205725874,
+            "max_drawdown_pct": 66.57877874683439,
+            "buy_hold_pct": 487.61959686216744,
+            "total_fees": 265.54856867502144
+          },
+          "validation": {
+            "total_return_pct": 30.882360850081525,
+            "total_trades": 14,
+            "profit_factor": 1.764010196198213,
+            "max_drawdown_pct": 34.05222613716328,
+            "buy_hold_pct": 50.12415632818892,
+            "total_fees": 146.42929334223618
+          }
+        },
+        "ETH/USDT": {
+          "train": {
+            "total_return_pct": 892.8666486328606,
+            "total_trades": 10,
+            "profit_factor": 7.610472382820765,
+            "max_drawdown_pct": 67.90338902618147,
+            "buy_hold_pct": 1666.2848297213625,
+            "total_fees": 334.7592302401138
+          },
+          "validation": {
+            "total_return_pct": 31.136237295150476,
+            "total_trades": 10,
+            "profit_factor": 1.9782328568735827,
+            "max_drawdown_pct": 39.75244409923978,
+            "buy_hold_pct": -17.621514083889846,
+            "total_fees": 102.34006580865277
+          }
+        },
+        "DOGE/USDT": {
+          "train": {
+            "total_return_pct": 1937.064252834494,
+            "total_trades": 24,
+            "profit_factor": 1.3857398844790318,
+            "max_drawdown_pct": 91.08499923617771,
+            "buy_hold_pct": 4353.455992043759,
+            "total_fees": 4145.0542529797285
+          },
+          "validation": {
+            "total_return_pct": 30.58152073998879,
+            "total_trades": 8,
+            "profit_factor": 1.4700237263121696,
+            "max_drawdown_pct": 68.60369419795896,
+            "buy_hold_pct": -22.174209180540206,
+            "total_fees": 90.9674943827368
+          }
+        }
+      },
+      "train_positive_markets": 3,
+      "train_min_trades": 10,
+      "train_mean_return": 1036.416235001366,
+      "validation_mean_return": 30.866706295073598,
+      "survives": true
+    },
+    {
+      "variant": {
+        "sma": 200,
+        "band": 0.02
+      },
+      "label": "SMA200 band2%",
+      "markets": {
+        "BTC/USDT": {
+          "train": {
+            "total_return_pct": 437.9852302646592,
+            "total_trades": 7,
+            "profit_factor": 4.527728785968296,
+            "max_drawdown_pct": 52.486396396675595,
+            "buy_hold_pct": 487.61959686216744,
+            "total_fees": 144.63137462534226
+          },
+          "validation": {
+            "total_return_pct": 44.9118521954714,
+            "total_trades": 6,
+            "profit_factor": 2.91415371456716,
+            "max_drawdown_pct": 32.15219567316083,
+            "buy_hold_pct": 50.12415632818892,
+            "total_fees": 59.856827405236196
+          }
+        },
+        "ETH/USDT": {
+          "train": {
+            "total_return_pct": 997.9615001880763,
+            "total_trades": 5,
+            "profit_factor": 14.484319905188146,
+            "max_drawdown_pct": 66.03103973610436,
+            "buy_hold_pct": 1666.2848297213625,
+            "total_fees": 229.22505704827412
+          },
+          "validation": {
+            "total_return_pct": 6.444331137862923,
+            "total_trades": 6,
+            "profit_factor": 1.1479332384849448,
+            "max_drawdown_pct": 46.95521791413242,
+            "buy_hold_pct": -17.621514083889846,
+            "total_fees": 52.946737128236705
+          }
+        },
+        "DOGE/USDT": {
+          "train": {
+            "total_return_pct": 3049.1108390872655,
+            "total_trades": 14,
+            "profit_factor": 1.769869873983969,
+            "max_drawdown_pct": 87.3863712782549,
+            "buy_hold_pct": 4353.455992043759,
+            "total_fees": 3042.099237497427
+          },
+          "validation": {
+            "total_return_pct": 25.041445988256417,
+            "total_trades": 6,
+            "profit_factor": 1.350858056297713,
+            "max_drawdown_pct": 70.29230369151819,
+            "buy_hold_pct": -22.174209180540206,
+            "total_fees": 68.40634645348378
+          }
+        }
+      },
+      "train_positive_markets": 3,
+      "train_min_trades": 5,
+      "train_mean_return": 1495.019189846667,
+      "validation_mean_return": 25.465876440530245,
+      "survives": true
+    }
+  ]
+}
