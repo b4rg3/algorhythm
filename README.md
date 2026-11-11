@@ -65,6 +65,10 @@ The live bot and the backtester share the same `PaperTrader`, so results are dir
 python backtest.py --days 90
 ```
 
+Backtest history comes from `HISTORY_EXCHANGE` (default `kucoin`), not the live exchange:
+Kraken's public OHLC endpoint only returns its most recent 720 candles (~7.5 days at 15m).
+The fetcher checks coverage and errors out rather than silently backtesting a shorter period.
+
 ## Disclaimer
 
 This project runs in **paper trading mode by default** — it simulates trades against an

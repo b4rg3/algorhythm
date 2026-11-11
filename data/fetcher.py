@@ -16,9 +16,11 @@ _TF_MINUTES = {
 class DataFetcher:
     """Fetches public OHLCV candle data from a crypto exchange via ccxt."""
 
-    def __init__(self, config: Config) -> None:
+    def __init__(self, config: Config, exchange_id: str | None = None) -> None:
+        """Create a fetcher for `exchange_id` (defaults to the live trading exchange)."""
         self.config = config
-        exchange_class = getattr(ccxt, config.exchange)
+        self.exchange_id = exchange_id or config.exchange
+        exchange_class = getattr(ccxt, self.exchange_id)
         self.exchange = exchange_class({"enableRateLimit": True})
 
     def fetch_candles(self, limit: int = 100) -> pd.DataFrame:
@@ -28,20 +30,26 @@ class DataFetcher:
                 self.config.symbol, timeframe=self.config.timeframe, limit=limit
             )
         except ccxt.BaseError as exc:
-            raise RuntimeError(f"Failed to fetch OHLCV data from {self.config.exchange}: {exc}") from exc
+            raise RuntimeError(f"Failed to fetch OHLCV data from {self.exchange_id}: {exc}") from exc
 
         return self._drop_incomplete(self._to_dataframe(raw))
 
     def fetch_history(self, days: int = 30) -> pd.DataFrame:
-        """Fetch paginated OHLCV history covering the last `days` calendar days."""
-        minutes = _TF_MINUTES.get(self.config.timeframe, 15)
-        per_request = 720  # Kraken max; safe for most exchanges
+        """Fetch paginated OHLCV history covering the last `days` calendar days.
 
-        since_ms = int((time.time() - days * 86400) * 1000)
-        step_ms = per_request * minutes * 60 * 1000
+        Raises if the exchange can't serve the requested range (e.g. Kraken, which
+        silently returns only its latest 720 candles regardless of `since`).
+        """
+        minutes = _TF_MINUTES.get(self.config.timeframe, 15)
+        tf_ms = minutes * 60 * 1000
+        per_request = 300  # within every supported exchange's page limit (Coinbase is 300)
+
+        start_ms = int((time.time() - days * 86400) * 1000)
+        now_ms = int(time.time() * 1000)
+        since_ms = start_ms
 
         all_raw: list = []
-        while True:
+        while since_ms < now_ms:
             try:
                 batch = self.exchange.fetch_ohlcv(
                     self.config.symbol,
@@ -50,24 +58,37 @@ class DataFetcher:
                     limit=per_request,
                 )
             except ccxt.BaseError as exc:
-                raise RuntimeError(f"Failed to fetch OHLCV history from {self.config.exchange}: {exc}") from exc
+                raise RuntimeError(
+                    f"Failed to fetch OHLCV history from {self.exchange_id}: {exc}"
+                ) from exc
 
             if not batch:
                 break
 
             all_raw.extend(batch)
-            last_ts = batch[-1][0]
-            since_ms = last_ts + minutes * 60 * 1000
-
-            if len(batch) < per_request:
-                break  # reached the present
+            next_since = batch[-1][0] + tf_ms
+            if next_since <= since_ms:
+                break  # exchange isn't advancing; avoid an infinite loop
+            since_ms = next_since
 
         if not all_raw:
-            raise RuntimeError("No historical data returned.")
+            raise RuntimeError(f"No historical data returned by {self.exchange_id}.")
 
         df = self._to_dataframe(all_raw)
         df = df[~df.index.duplicated(keep="last")]
+        df = df[df.index >= pd.Timestamp(start_ms, unit="ms", tz="UTC")]
         df.sort_index(inplace=True)
+
+        # Coverage check: the first candle should be near the requested start.
+        first_ms = int(df.index[0].timestamp() * 1000)
+        if first_ms - start_ms > 2 * tf_ms:
+            got_days = (now_ms - first_ms) / 86_400_000
+            raise RuntimeError(
+                f"{self.exchange_id} only returned {got_days:.1f} of the {days} requested days "
+                f"(first candle {df.index[0]:%Y-%m-%d %H:%M} UTC). "
+                "Set HISTORY_EXCHANGE to an exchange with deeper history, or reduce --days."
+            )
+
         return self._drop_incomplete(df)
 
     def _drop_incomplete(self, df: pd.DataFrame) -> pd.DataFrame:

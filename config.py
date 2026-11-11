@@ -28,6 +28,11 @@ class Config:
     symbol: str = os.getenv("SYMBOL", "DOGE/USDT")
     timeframe: str = os.getenv("TIMEFRAME", "15m")
 
+    # Exchange used for backtest history. Kraken's public OHLC endpoint only serves its
+    # most recent 720 candles, so long backtests need an exchange with deep history.
+    # Set it to the same value as EXCHANGE to backtest on the live venue's data.
+    history_exchange: str = os.getenv("HISTORY_EXCHANGE", "kucoin")
+
     short_window: int = _env_int("SHORT_WINDOW", 9)
     long_window: int = _env_int("LONG_WINDOW", 21)
     rsi_period: int = _env_int("RSI_PERIOD", 14)

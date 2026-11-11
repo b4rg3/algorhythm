@@ -23,18 +23,22 @@ def _usdt(v: float) -> str:
     return f"[{color}]{v:+.2f} USDT[/{color}]"
 
 
-def print_report(results: dict, days: int, config: Config) -> None:
+def print_report(results: dict, days: int, config: Config, df) -> None:
     console = Console()
 
     r = results
     pf = r["profit_factor"]
-    pf_str = f"{pf:.2f}" if not math.isinf(pf) else "∞"
+    pf_str = f"{pf:.2f}" if not math.isinf(pf) else "inf"
 
     # Summary table
     summary = Table(show_header=False, box=None, padding=(0, 1))
-    summary.add_row("Symbol", f"{config.symbol} ({config.exchange})")
+    summary.add_row("Symbol", config.symbol)
+    summary.add_row("Data source", f"{config.history_exchange}  (live trading on {config.exchange})")
     summary.add_row("Timeframe", config.timeframe)
-    summary.add_row("Period", f"{days} days")
+    summary.add_row(
+        "Period",
+        f"{df.index[0]:%Y-%m-%d %H:%M} to {df.index[-1]:%Y-%m-%d %H:%M} UTC  ({len(df)} candles)",
+    )
     summary.add_row("MA windows", f"EMA {config.short_window} / {config.long_window}")
     summary.add_row("RSI period", f"{config.rsi_period}  (ob={config.rsi_overbought} os={config.rsi_oversold})")
     summary.add_row("", "")
@@ -105,16 +109,23 @@ def main() -> None:
     config = Config()
     console = Console()
 
-    console.print(f"[cyan]Fetching {args.days}d of {config.symbol} {config.timeframe} candles from {config.exchange}...[/cyan]")
-    fetcher = DataFetcher(config)
-    df = fetcher.fetch_history(days=args.days)
+    console.print(
+        f"[cyan]Fetching {args.days}d of {config.symbol} {config.timeframe} candles "
+        f"from {config.history_exchange}...[/cyan]"
+    )
+    fetcher = DataFetcher(config, exchange_id=config.history_exchange)
+    try:
+        df = fetcher.fetch_history(days=args.days)
+    except RuntimeError as exc:
+        console.print(f"[bold red]ERROR:[/bold red] {exc}")
+        raise SystemExit(1)
     console.print(f"[dim]  {len(df)} candles fetched.[/dim]")
 
     console.print("[cyan]Running backtest...[/cyan]")
     bt = Backtester(config)
     results = bt.run(df)
 
-    print_report(results, args.days, config)
+    print_report(results, args.days, config, df)
 
 
 if __name__ == "__main__":
