@@ -1,23 +1,22 @@
 """Protocol step 1: choose the timeframe from trading costs vs typical price movement.
 
 Uses the TRAIN segment only and computes no strategy returns, just volatility (ATR).
-Writes the decision to research/timeframe_choice.json.
+Writes the decision to research/<version>/timeframe_choice.json.
 """
 
-from dataclasses import replace
+import os
 
 import pandas_ta as ta
 from rich.console import Console
 from rich.table import Table
 
-from config import Config
 from data.fetcher import DataFetcher
 from research import protocol as P
 
 
 def main() -> None:
     console = Console()
-    base = Config()
+    base = P.base_config()
     sp = P.splits()
     cost = P.round_trip_cost_pct(base)
     threshold = P.ATR_COST_MULTIPLE * cost
@@ -64,6 +63,7 @@ def main() -> None:
 
     P.save_json(P.TIMEFRAME_CHOICE_PATH, {
         "protocol": P.VERSION,
+        "symbol": base.symbol,
         "rule": f"fastest timeframe with median ATR({P.ATR_PERIOD})% >= "
         f"{P.ATR_COST_MULTIPLE} x round-trip cost ({threshold:.2f}%)",
         "round_trip_cost_pct": cost,
@@ -72,7 +72,7 @@ def main() -> None:
         "chosen": chosen,
     })
     if chosen:
-        console.print(f"[bold green]Chosen timeframe: {chosen}[/bold green]  (saved to research/timeframe_choice.json)")
+        console.print(f"[bold green]Chosen timeframe: {chosen}[/bold green]  (saved to {os.path.relpath(P.TIMEFRAME_CHOICE_PATH)})")
     else:
         console.print("[bold red]No timeframe meets the rule.[/bold red]")
 

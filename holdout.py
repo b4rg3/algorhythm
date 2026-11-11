@@ -6,13 +6,11 @@ for this protocol version (every run is logged to research/holdout_log.jsonl).
 
 import json
 import os
-from dataclasses import replace
 from datetime import datetime, timezone
 
 from rich.console import Console
 
 from backtest.runner import Backtester
-from config import Config
 from data.coingecko import cross_check
 from data.fetcher import DataFetcher
 from research import protocol as P
@@ -40,7 +38,7 @@ def main() -> None:
     sp = P.splits()
     tf = selection["timeframe"]
     variant = selection["selected"]
-    cfg = replace(Config(), timeframe=tf, **variant)
+    cfg = P.base_config(timeframe=tf, **variant)
 
     # Load from the validation start so indicators are warm when the holdout begins.
     df = DataFetcher(cfg, exchange_id=cfg.history_exchange).fetch_history(
@@ -60,6 +58,7 @@ def main() -> None:
     record = {
         "protocol": P.VERSION,
         "run_at": datetime.now(timezone.utc).isoformat(),
+        "symbol": cfg.symbol,
         "timeframe": tf,
         "variant": variant,
         "label": P.variant_label(variant),

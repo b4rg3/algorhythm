@@ -1,17 +1,17 @@
 """Protocol steps 2-3: run the fixed variant grid on train + validation, apply the selection rule.
 
 Never loads holdout data. The timeframe comes from research/timeframe_choice.json (step 1).
-Writes every result and the selection to research/selection.json.
+Writes every result and the selection to research/<version>/selection.json.
 """
 
 import math
+import os
 from dataclasses import replace
 
 from rich.console import Console
 from rich.table import Table
 
 from backtest.runner import Backtester
-from config import Config
 from data.coingecko import cross_check
 from data.fetcher import DataFetcher
 from research import protocol as P
@@ -38,7 +38,7 @@ def main() -> None:
         raise SystemExit("Step 1 chose no timeframe; nothing to sweep.")
 
     sp = P.splits()
-    base = replace(Config(), timeframe=tf)
+    base = P.base_config(timeframe=tf)
     pre_holdout_days = (sp.holdout_start - sp.start).days
 
     console.print(
@@ -123,6 +123,7 @@ def main() -> None:
 
     P.save_json(P.SELECTION_PATH, {
         "protocol": P.VERSION,
+        "symbol": base.symbol,
         "timeframe": tf,
         "status": status,
         "reason": reason,
@@ -130,7 +131,7 @@ def main() -> None:
         "fragility": fragility,
         "results": rows,
     })
-    console.print("[dim]Saved to research/selection.json[/dim]")
+    console.print(f"[dim]Saved to {os.path.relpath(P.SELECTION_PATH)}[/dim]")
 
 
 if __name__ == "__main__":

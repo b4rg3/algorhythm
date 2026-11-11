@@ -1,11 +1,22 @@
-# Research protocol (v1)
+# Research protocols
 
 This file fixes **how** strategies are evaluated *before* any results are computed, so that
 we can't move the goalposts after seeing numbers. It was committed before the analyses it
 describes were run; the git history is the audit trail.
 
 The rules are encoded in `research/protocol.py`. Decisions produced by each step are
-written to `research/` and committed.
+written to `research/<version>/` and committed. Every holdout run, for any version, is
+logged to `research/holdout_log.jsonl`. Select a version with `PROTOCOL=v1` (default: latest).
+
+## Versions
+
+| Version | Market | Status |
+|---|---|---|
+| v1 | DOGE/USDT | **Rejected** at step 3: all 18 variants lost money on train (DOGE −72%). Holdout unused. |
+| v2 | ETH/USDT | Pre-registered; see "v2" below. |
+
+The rules below were written for v1 and apply unchanged to every version unless a version's
+section says otherwise.
 
 ## Data
 
@@ -77,3 +88,21 @@ buy-and-hold over the same span. A pass is evidence, not proof.
 A variant that passes is paper-traded live on new data, which no backtest can have
 overfit. Any change to the strategy rules after the holdout has been seen starts
 protocol v2 with a new, later holdout window.
+
+---
+
+## v2: ETH/USDT
+
+**Only change from v1: the market** (ETH/USDT, cross-checked against CoinGecko `ethereum`).
+Strategy, variant grid, data window and splits, timeframe rule, selection rule and pass
+criterion are all identical to v1. In particular, the pass bar is still a positive return
+after costs on the holdout. It was not relaxed after seeing v1's results.
+
+Disclosures:
+- **Multiple testing:** ETH was chosen *after* the strategy failed on DOGE. v2 is a second
+  attempt with the same strategy, so a v2 pass is somewhat weaker evidence than a first-try
+  pass would be. Any further markets will add to this count.
+- No backtest of any kind has been run on ETH data before this protocol was committed.
+  ETH's current spot price (~$2,076 on 2026-11-11) was seen via CoinGecko; its price history
+  over the window has not been reviewed in this project.
+- The live bot is not affected by this protocol; its SYMBOL stays as configured in `.env`.
