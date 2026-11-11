@@ -38,5 +38,10 @@ class Config:
     risk_per_trade_pct: float = _env_float("RISK_PER_TRADE_PCT", 0.02)
     stop_loss_pct: float = _env_float("STOP_LOSS_PCT", 0.03)
 
+    # Execution cost model (fractions, e.g. 0.004 = 0.40%). Defaults approximate
+    # Kraken's entry-tier taker fee plus a small slippage allowance.
+    fee_pct: float = _env_float("FEE_PCT", 0.004)
+    slippage_pct: float = _env_float("SLIPPAGE_PCT", 0.0005)
+
     api_key: str = os.getenv("API_KEY", "")
     api_secret: str = os.getenv("API_SECRET", "")

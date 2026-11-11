@@ -34,13 +34,20 @@ def run_cycle() -> None:
             logger.log_error("No indicator data available yet.")
             return
 
+        candle = df.iloc[-1]
+        candle_ts = df.index[-1]
+        price = candle["close"]
+
+        if trader.already_processed(candle_ts):
+            # No new completed candle since the last cycle; don't act on the same one twice.
+            return
+
         signal = strategy.signal(df)
         indicators = strategy.describe(df)
-        price = df.iloc[-1]["close"]
 
         logger.log_candle(indicators)
 
-        trade = trader.execute(signal, price, risk_manager)
+        trade = trader.execute(signal, candle, risk_manager, candle_ts=candle_ts)
         if trade is not None:
             logger.log_trade(trade)
 

@@ -1,17 +1,22 @@
-"""Walk-forward backtester — no lookahead, no persistence side effects."""
+"""Walk-forward backtester — no lookahead, no persistence side effects.
+
+Uses the same PaperTrader as the live bot (with persistence disabled), so fills, fees,
+slippage and stop-loss handling are identical between backtest and live paper trading.
+"""
 
 import math
 
 import pandas as pd
 
 from config import Config
+from execution.paper_trader import PaperTrader
 from indicators.engine import IndicatorEngine
 from risk.manager import RiskManager
 from strategy.ma_rsi import MARSIStrategy
 
 
 class Backtester:
-    """Replays a historical OHLCV DataFrame through the live strategy logic."""
+    """Replays a historical OHLCV DataFrame through the live strategy and execution logic."""
 
     def __init__(self, config: Config) -> None:
         self.config = config
@@ -22,87 +27,35 @@ class Backtester:
     def run(self, df: pd.DataFrame) -> dict:
         """Run the backtest and return a results dict."""
         df = self.engine.calculate(df)
-
-        balance_usdt: float = self.config.paper_balance_usdt
-        balance_base: float = 0.0
-        position: dict | None = None
+        trader = PaperTrader(self.config, state_path=None)
 
         trades: list[dict] = []
         equity: list[float] = []
 
         for i in range(1, len(df)):
             slice_df = df.iloc[: i + 1]
-            price: float = float(slice_df.iloc[-1]["close"])
-
-            # Check stop-loss on open position
-            if position is not None:
-                stop_hit = price <= position["stop_loss"]
-                if stop_hit:
-                    proceeds = balance_base * price
-                    pnl = proceeds - position["quantity"] * position["entry_price"]
-                    balance_usdt += proceeds
-                    balance_base = 0.0
-                    trades.append({
-                        "action": "STOP_LOSS",
-                        "price": price,
-                        "quantity": position["quantity"],
-                        "pnl": pnl,
-                        "ts": slice_df.index[-1],
-                    })
-                    position = None
+            candle = slice_df.iloc[-1]
+            ts = slice_df.index[-1]
 
             signal = self.strategy.signal(slice_df)
+            trade = trader.execute(signal, candle, self.risk_manager)
+            if trade is not None:
+                trade["ts"] = ts
+                trades.append(trade)
 
-            if signal == "BUY" and position is None and balance_usdt > 10:
-                quantity = self.risk_manager.position_size(balance_usdt, price)
-                cost = quantity * price
-                if cost > balance_usdt:
-                    quantity = round(balance_usdt / price, 6)
-                    cost = quantity * price
-                balance_usdt -= cost
-                balance_base += quantity
-                stop_loss = self.risk_manager.stop_loss_price(price, "BUY")
-                position = {
-                    "side": "BUY",
-                    "entry_price": price,
-                    "quantity": quantity,
-                    "stop_loss": stop_loss,
-                }
-                trades.append({
-                    "action": "BUY",
-                    "price": price,
-                    "quantity": quantity,
-                    "ts": slice_df.index[-1],
-                })
+            equity.append(trader.portfolio_value(float(candle["close"])))
 
-            elif signal == "SELL" and position is not None:
-                proceeds = balance_base * price
-                pnl = proceeds - position["quantity"] * position["entry_price"]
-                balance_usdt += proceeds
-                balance_base = 0.0
-                trades.append({
-                    "action": "SELL",
-                    "price": price,
-                    "quantity": position["quantity"],
-                    "pnl": pnl,
-                    "ts": slice_df.index[-1],
-                })
-                position = None
-
-            equity.append(balance_usdt + balance_base * price)
-
-        # Close any open position at last price for reporting
         final_price = float(df.iloc[-1]["close"])
-        final_value = balance_usdt + balance_base * final_price
+        final_value = trader.portfolio_value(final_price)
 
-        return self._metrics(trades, equity, final_value, position, final_price)
+        return self._metrics(trades, equity, final_value, trader, final_price)
 
     def _metrics(
         self,
         trades: list[dict],
         equity: list[float],
         final_value: float,
-        open_position: dict | None,
+        trader: PaperTrader,
         final_price: float,
     ) -> dict:
         closed = [t for t in trades if "pnl" in t]
@@ -130,9 +83,11 @@ class Backtester:
             / self.config.paper_balance_usdt
             * 100,
             "total_pnl": total_pnl,
+            "total_fees": trader.total_fees,
             "total_trades": len(closed),
             "wins": len(wins),
             "losses": len(losses),
+            "stop_losses": sum(1 for t in closed if t["action"] == "STOP_LOSS"),
             "win_rate": len(wins) / len(closed) * 100 if closed else 0.0,
             "avg_win": gross_wins / len(wins) if wins else 0.0,
             "avg_loss": -gross_losses / len(losses) if losses else 0.0,
@@ -140,7 +95,7 @@ class Backtester:
             "max_drawdown_pct": max_dd_pct,
             "best_trade": max((t["pnl"] for t in closed), default=0.0),
             "worst_trade": min((t["pnl"] for t in closed), default=0.0),
-            "open_position": open_position,
+            "open_position": trader.position,
             "final_price": final_price,
             "trade_log": trades,
         }

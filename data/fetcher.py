@@ -30,7 +30,7 @@ class DataFetcher:
         except ccxt.BaseError as exc:
             raise RuntimeError(f"Failed to fetch OHLCV data from {self.config.exchange}: {exc}") from exc
 
-        return self._to_dataframe(raw)
+        return self._drop_incomplete(self._to_dataframe(raw))
 
     def fetch_history(self, days: int = 30) -> pd.DataFrame:
         """Fetch paginated OHLCV history covering the last `days` calendar days."""
@@ -68,6 +68,16 @@ class DataFetcher:
         df = self._to_dataframe(all_raw)
         df = df[~df.index.duplicated(keep="last")]
         df.sort_index(inplace=True)
+        return self._drop_incomplete(df)
+
+    def _drop_incomplete(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Drop the last candle if it is still forming (its close time is in the future)."""
+        if df.empty:
+            return df
+        minutes = _TF_MINUTES.get(self.config.timeframe, 15)
+        close_time = df.index[-1] + pd.Timedelta(minutes=minutes)
+        if close_time > pd.Timestamp.now(tz="UTC"):
+            return df.iloc[:-1]
         return df
 
     def _to_dataframe(self, raw: list) -> pd.DataFrame:

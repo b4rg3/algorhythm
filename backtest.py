@@ -41,9 +41,14 @@ def print_report(results: dict, days: int, config: Config) -> None:
     summary.add_row("Start balance", f"{r['start_balance']:.2f} USDT")
     summary.add_row("Final value", f"{r['final_value']:.2f} USDT")
     summary.add_row("Total return", _pct(r["total_return_pct"]))
-    summary.add_row("Realized P&L", _usdt(r["total_pnl"]))
+    summary.add_row("Realized P&L", _usdt(r["total_pnl"]) + "  (net of fees)")
+    summary.add_row("Fees paid", f"{r['total_fees']:.2f} USDT")
+    summary.add_row(
+        "Cost model",
+        f"fee {config.fee_pct * 100:.2f}% / slippage {config.slippage_pct * 100:.2f}% per fill",
+    )
     summary.add_row("", "")
-    summary.add_row("Closed trades", str(r["total_trades"]))
+    summary.add_row("Closed trades", f"{r['total_trades']}  ({r['stop_losses']} stop-outs)")
     summary.add_row("Wins / Losses", f"{r['wins']} / {r['losses']}")
     summary.add_row("Win rate", f"{r['win_rate']:.1f}%")
     summary.add_row("Avg win", f"{r['avg_win']:+.2f} USDT")

@@ -81,6 +81,8 @@ class TradeLogger:
         table.add_row("Quantity", f"{trade['quantity']:.6f}")
         if "stop_loss" in trade:
             table.add_row("Stop Loss", p(trade["stop_loss"]))
+        if "fee" in trade:
+            table.add_row("Fee", f"{trade['fee']:.4f}")
         if "pnl" in trade:
             pnl_color = "green" if trade["pnl"] >= 0 else "red"
             table.add_row("P&L", f"[{pnl_color}]{trade['pnl']:.2f}[/{pnl_color}]")
@@ -101,6 +103,8 @@ class TradeLogger:
         }
         if "stop_loss" in trade:
             entry["stop_loss"] = trade["stop_loss"]
+        if "fee" in trade:
+            entry["fee"] = trade["fee"]
         if "pnl" in trade:
             entry["pnl"] = trade["pnl"]
         self._append(entry)

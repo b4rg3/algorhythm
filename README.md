@@ -47,6 +47,24 @@ Signal rules:
 Position sizing risks a fixed percentage of the current balance per trade (default 2%), and
 every open position carries a stop-loss (default 3% from entry) that is checked on every cycle.
 
+## Execution model
+
+The live bot and the backtester share the same `PaperTrader`, so results are directly comparable:
+
+- Signals are evaluated only on **completed** candles; the still-forming candle is dropped.
+  The live loop also skips a cycle if no new candle has closed since the last one.
+- BUY/SELL fills at the candle close, adjusted against you by `SLIPPAGE_PCT` (default 0.05%).
+- Stop-losses trigger when the candle's **low** touches the stop, and fill at the stop price
+  (or at the open if price gapped through it), minus slippage.
+- Every fill pays `FEE_PCT` (default 0.40%, roughly Kraken's entry-tier taker fee). Reported
+  P&L is net of fees.
+
+## Backtesting
+
+```bash
+python backtest.py --days 90
+```
+
 ## Disclaimer
 
 This project runs in **paper trading mode by default** — it simulates trades against an
