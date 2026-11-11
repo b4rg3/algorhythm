@@ -14,7 +14,7 @@ logged to `research/holdout_log.jsonl`. Select a version with `PROTOCOL=v1` (def
 |---|---|---|
 | v1 | DOGE/USDT | **Rejected** at step 3: all 18 variants lost money on train (DOGE −72%). Holdout unused. |
 | v2 | ETH/USDT | **Rejected** at step 3: 2 of 18 variants were positive on train (+1.9%, +1.1%; ETH −28.7%), both lost 10.9% on validation. Timeframe 4h. Holdout unused. |
-| v3 | BTC + ETH + DOGE, daily | Pre-registered; see "v3" below. Different strategy (SMA trend-following). |
+| v3 | BTC + ETH + DOGE, daily | **Failed holdout.** Sweep: all 8 variants positive on train and validation; SMA100 band 2% selected (validation mean +68.8%). Holdout mean −0.11% (BTC +7.0%, ETH +6.8%, DOGE −14.1%; 4 trades in total), below buy & hold on all three. |
 
 The rules below were written for v1 and apply unchanged to every version unless a version's
 section says otherwise.
