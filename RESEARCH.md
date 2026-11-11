@@ -86,8 +86,8 @@ buy-and-hold over the same span. A pass is evidence, not proof.
 ## Step 5: forward paper trading
 
 A variant that passes is paper-traded live on new data, which no backtest can have
-overfit. Any change to the strategy rules after the holdout has been seen starts
-protocol v2 with a new, later holdout window.
+overfit. Any change to the strategy rules after the holdout has been seen starts a new
+protocol version, which needs a holdout that no earlier version has evaluated.
 
 ---
 

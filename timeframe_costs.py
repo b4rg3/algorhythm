@@ -30,7 +30,7 @@ def main() -> None:
 
     stats = []
     for tf in P.TIMEFRAME_CANDIDATES:
-        cfg = replace(base, timeframe=tf)
+        cfg = P.base_config(timeframe=tf)
         df = DataFetcher(cfg, exchange_id=base.history_exchange).fetch_history(
             days=train_days, end=sp.validation_start
         )

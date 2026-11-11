@@ -52,17 +52,7 @@ class DataFetcher:
 
         all_raw: list = []
         while since_ms < end_ms:
-            try:
-                batch = self.exchange.fetch_ohlcv(
-                    self.config.symbol,
-                    timeframe=self.config.timeframe,
-                    since=since_ms,
-                    limit=per_request,
-                )
-            except ccxt.BaseError as exc:
-                raise RuntimeError(
-                    f"Failed to fetch OHLCV history from {self.exchange_id}: {exc}"
-                ) from exc
+            batch = self._fetch_page_with_retry(since_ms, per_request)
 
             if not batch:
                 break
@@ -96,6 +86,28 @@ class DataFetcher:
             )
 
         return self._drop_incomplete(df)
+
+    def _fetch_page_with_retry(self, since_ms: int, limit: int, attempts: int = 6) -> list:
+        """Fetch one page of history, backing off and retrying when rate-limited."""
+        for attempt in range(attempts):
+            try:
+                return self.exchange.fetch_ohlcv(
+                    self.config.symbol,
+                    timeframe=self.config.timeframe,
+                    since=since_ms,
+                    limit=limit,
+                )
+            except ccxt.BaseError as exc:
+                rate_limited = isinstance(exc, (ccxt.RateLimitExceeded, ccxt.DDoSProtection)) or (
+                    "too many requests" in str(exc).lower()
+                )
+                if rate_limited and attempt < attempts - 1:
+                    time.sleep(min(60, 5 * 2**attempt))  # 5, 10, 20, 40, 60s
+                    continue
+                raise RuntimeError(
+                    f"Failed to fetch OHLCV history from {self.exchange_id}: {exc}"
+                ) from exc
+        raise AssertionError("unreachable")
 
     def _drop_incomplete(self, df: pd.DataFrame) -> pd.DataFrame:
         """Drop the last candle if it is still forming (its close time is in the future)."""
