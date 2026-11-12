@@ -341,6 +341,22 @@ computer's uptime rather than the strategy.
 - `forward_check.py` to run the fidelity replay and compute the weekly shares of rises kept
   and falls taken, the checkpoint and the final verdict. It is tested against the historical
   numbers above before F1 starts.
+
+### Implementation notes (added after registration; no rule changes)
+
+- Built as `f1.py` (hourly runner), `forward_check.py` (checker), `research/f1.py` (the
+  constants above) and `research/capture.py` (the weekly measurement), with offline tests in
+  `tests/test_f1.py`.
+- **Start:** registered 2026-11-12 00:05 UTC, so the first F1 candle is **2026-11-12**
+  (closes 2026-11-13 00:00 UTC). Checkpoint after 26 complete weeks, final verdict after
+  104.
+- **Verification against the historical reference**, using the shared measurement code
+  (complete calendar weeks only): pooled 67% / 55% from 2020 (matches) and 58% / 46% from
+  2024 (registered: 45%). 26-week windows positive 41% and 104-week windows positive 73%
+  (both match). 26-week 10th percentile −23 pp (registered floor: −22 pp). The registered
+  floor is kept unchanged, which is very slightly stricter.
+- **Data:** F1's records are in `logs/f1/` (not in git). Back the folder up: it is the
+  experiment.
 - An always-on machine, or a scheduled task shortly after 00:00 UTC each day.
 
 ---

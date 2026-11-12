@@ -96,6 +96,23 @@ python research_v3.py sweep
 python research_v3.py holdout
 ```
 
+## F1 forward test
+
+F1 paper-trades v3's rule on Kraken (BTC, ETH, DOGE) from 2026-11-12, as registered in
+`RESEARCH.md`. It needs one hourly run, set up as a Windows scheduled task:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\install_f1_task.ps1
+```
+
+```bash
+python f1.py status        # paper portfolios
+python forward_check.py    # fidelity, weekly rise/fall shares, checkpoint and final verdicts
+```
+
+Records are written to `logs/f1/` (not in git; back it up), with a run log in
+`logs/f1/runner.log`.
+
 ## Tests
 
 ```bash
