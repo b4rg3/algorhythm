@@ -47,6 +47,7 @@ class Backtester:
 
         trades: list[dict] = []
         equity: list[float] = []
+        in_market: list[bool] = []
 
         for i in range(first, len(df)):
             slice_df = df.iloc[: i + 1]
@@ -60,6 +61,7 @@ class Backtester:
                 trades.append(trade)
 
             equity.append(trader.portfolio_value(float(candle["close"])))
+            in_market.append(trader.position is not None)
 
         final_price = float(df.iloc[-1]["close"])
         final_value = trader.portfolio_value(final_price)
@@ -70,6 +72,10 @@ class Backtester:
         results["period_start"] = df.index[first]
         results["period_end"] = df.index[-1]
         results["candles"] = len(df) - first
+        # Per-candle series (end-of-candle values), for breakdowns by sub-period.
+        results["equity_curve"] = pd.Series(equity, index=df.index[first:])
+        results["in_market"] = pd.Series(in_market, index=df.index[first:])
+        results["close"] = df["close"].iloc[first - 1:]
         return results
 
     def _metrics(
